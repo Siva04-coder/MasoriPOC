@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Patients Progression - Masori</title>
+    <!--  -->
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'plugins/bootstrap-5.0.2/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'plugins/select2/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/timeline.css') }}">
+    <!--  -->
+</head>
+
+<body>
+    <!--  -->
+    <nav class="navbar fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="./">
+                <i class="fas fa-globe"></i>Masori Analytics<span>|</span><span>HOME</span>
+            </a>
+            <ul class="navbar-nav">
+                <li>Patients Progression</li>
+            </ul>
+        </div>
+    </nav>
+    <!--  -->
+    <div class="container content-container">
+        <!--  -->
+        <section class="section">
+
+            <form id="form">
+                <div class="row">
+                    <div class="col">
+                        <label class="form-label">Zip Code</label>
+                        <input class="form-control" name="zipcode">
+                    </div>
+                    <div class="col">
+                        <label class="form-label">City</label>
+                        <select style="width: 100%;" name="city">
+                            <option value=""></option>
+                        </select>
+                    </div>
+                    <div class=" col">
+                        <label class="form-label">Diagnosis</label>
+                        <select style="width: 100%;" name="diagnosis">
+                            <option value=""></option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label class="form-label">Drug</label>
+                        <select style="width: 100%;" name="drug">
+                            <option value=""></option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label class="form-label">&nbsp;</label>
+                        <button class="btn btn-primary w-100">GO</button>
+                    </div>
+                </div>
+            </form>
+
+        </section>
+
+
+        <!--  -->
+        <div id="results">
+            <section class="section">
+                <!--  -->
+                <button class="btn btn-primary mb-3">Similar Patients</button>
+                <!--  -->
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th width="50px" class="text-center">#</th>
+                                <th>Patient Number</th>
+                                <th>City</th>
+                                <th>Diagnosis</th>
+                                <th>Drug</th>
+                                <th width="1%"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            <tr>
+                                <td class="text-center"></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><button class="btn btn-primary btn-sm">See Timeline</button></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <!--  -->
+            <section class="section">
+                <section class="timeline">
+                    <ol>
+                        <li>
+                            <div>
+                                <time>DD/MM/YYYY</time>
+                                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <time>DD/MM/YYYY</time>
+                                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <time>DD/MM/YYYY</time>
+                                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <time>DD/MM/YYYY</time>
+                                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <time>DD/MM/YYYY</time>
+                                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <time>DD/MM/YYYY</time>
+                                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                            </div>
+                        </li>
+                        <li></li>
+                    </ol>
+                    <span class="arrow arrow__prev">
+                        <i class="fas fa-angle-left"></i>
+                    </span>
+                    <span class="arrow arrow__next">
+                        <i class="fas fa-angle-right"></i>
+                    </span>
+                </section>
+            </section>
+        </div>
+    </div>
+
+    <!--  -->
+    <script src="{{ url_for('static', filename= 'plugins/jquery-3.6.0/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ url_for('static', filename= 'plugins/bootstrap-5.0.2/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename= 'plugins/select2/select2.min.js') }}"></script>
+    <script src="{{ url_for('static', filename= 'plugins/fontawesome-5.15.3/fontawesome.min.js') }}"></script>
+    <!--  -->
+
+    <script class="select2">
+        $(document).ready(function () {
+            $('select').select2({
+                placeholder: ""
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: '/get',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (data) {
+                    $("#results").html(data);
+                    $(".select2").remove();
+
+                },
+                error: function () {
+                    $(this).html("error!");
+                }
+            });
+        });
+    </script>
+
+    <script>
+
+        $.ajaxSetup({
+            headers: { "X-CSRFToken": '{{csrf_token}}' }
+        });
+
+        $('#form').unbind().submit(function (e) {
+            e.preventDefault();
+
+            var data = {};
+            var Form = this;
+
+            $.each(this.elements, function (i, v) {
+                var input = $(v);
+                data[input.attr("name")] = input.val();
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: '/table',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (data) {
+                    $("#results").html(data);
+                    $(".select2").remove();
+
+                },
+                error: function () {
+                    $(this).html("error!");
+                }
+            });
+        });
+
+    </script>
+
+</body>
+
+</html>

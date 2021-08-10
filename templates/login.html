@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Login - Masori</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--  -->
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'plugins/bootstrap-5.0.2/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'plugins/select2/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
+    <!--  -->
+    <style>
+        .divider:after,
+        .divider:before {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #eee;
+        }
+
+        .h-custom {
+            height: calc(100% - 73px);
+        }
+
+        @media (max-width: 450px) {
+            .h-custom {
+                height: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!--  -->
+    <section class="vh-100">
+        <div class="container-fluid h-custom">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-md-9 col-lg-6 col-xl-5">
+                    <img src="{{ url_for('static', filename= 'images/logo-green.png') }}" class="img-fluid" alt="Logo">
+                </div>
+                <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+                    <div>
+                        <h4>{{ message }}</h4><br>
+                    </div>
+                        <!-- Email input -->
+                        <div class="form-outline mb-4">
+                            <label class="form-label" for="form3Example3">Email address</label>
+                            <input type="email" name="email" id="form3Example3" class="form-control form-control-lg"
+                                placeholder="Enter a valid email address" />
+                        </div>
+
+                        <!-- Password input -->
+                        <div class="form-outline mb-3">
+                            <label class="form-label" for="form3Example4">Password</label>
+                            <input type="password" name="password" id="form3Example4"
+                                class="form-control form-control-lg" placeholder="Enter password" />
+                        </div>
+
+
+                        <div class="text-center text-lg-start mt-4 pt-2">
+                            <button class="btn btn-primary btn-lg"
+                                style="padding-left: 2.5rem; padding-right: 2.5rem;" onclick="Login()">Login</button>
+                        </div>
+
+                </div>
+            </div>
+        </div>
+        <div
+            class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary">
+
+            <!-- Right -->
+            <div>
+                <br>
+            </div>
+            <!-- Right -->
+        </div>
+    </section>
+    <!--  -->
+    <script src="{{ url_for('static', filename= 'plugins/jquery-3.6.0/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ url_for('static', filename= 'plugins/bootstrap-5.0.2/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename= 'plugins/fontawesome-5.15.3/fontawesome.min.js') }}"></script>
+
+</body>
+
+<script>
+    function Login(){
+
+        var data = new FormData();
+
+        data.append('username', $("#form3Example3").val());
+        data.append('password', $("#form3Example4").val());
+
+        $.ajax({
+                type: 'POST',
+                enctype: 'multipart/form-data',
+                url: './logon',
+                processData: false,
+                contentType: false,
+                cache: false,
+                timeout: 800000,
+                data: data,
+                success: function (data) {
+
+                    if(data == 'success'){
+                        window.location = './home';
+                    }
+
+                },
+                error: function (err) {
+                    debugger;
+                    $(this).html("error!");
+                }
+            });
+    }
+</script>
+
+</html>
