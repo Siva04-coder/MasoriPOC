@@ -1,0 +1,424 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<div class="container content-container">
+    <!--  -->
+    <section class="section">
+
+        <form id="form">
+            <div class="row">
+                <div class="col">
+                    <label class="form-label">Zip Code</label>
+                    <input class="form-control" name="zipcode">
+                </div>
+                <div class="col">
+                    <label class="form-label">City</label>
+                    <select style="width: 100%;" name="city" id="selectCity">
+                        <option value=""></option>
+                    </select>
+                </div>
+                <div class=" col">
+                    <label class="form-label">Diagnosis</label>
+                    <select style="width: 100%;" name="diagnosis" id="selectdiagnosis">
+                        <option value=""></option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label class="form-label">Drug</label>
+                    <select style="width: 100%;" name="drug" id="selectdrug">
+                        <option value=""></option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label class="form-label">&nbsp;</label>
+                    <button class="btn btn-primary w-100">GO</button>
+                </div>
+            </div>
+        </form>
+
+    </section>
+
+
+    <!--  -->
+    <div id="results">
+
+        <section class="section" id="patient_timeline" style="display: none;">
+
+            <!--  -->
+            <button class="btn btn-primary mb-3">Similar Patients</button>
+            <!--  -->
+
+            <section class="timeline">
+                <ol>
+                    <li class="dis">
+                        <div>
+                            <time>DD/MM/YYYY</time>
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </div>
+                    </li>
+                    <li class="dis">
+                        <div>
+                            <time>DD/MM/YYYY</time>
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </div>
+                    </li>
+                    <li class="dis">
+                        <div>
+                            <time>DD/MM/YYYY</time>
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </div>
+                    </li>
+                    <li class="dis">
+                        <div>
+                            <time>DD/MM/YYYY</time>
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </div>
+                    </li>
+                    <li class="dis">
+                        <div>
+                            <time>DD/MM/YYYY</time>
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </div>
+                    </li>
+                    <li class="dis">
+                        <div>
+                            <time>DD/MM/YYYY 6</time>
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </div>
+                    </li>
+                    <li class="clo" style="display: none;">
+                        <div>
+                            <time>DD/MM/YYYY 7</time>
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </div>
+                    </li>
+                    <li class="clo" style="display: none;">
+                        <div>
+                            <time>DD/MM/YYYY 8</time>
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </div>
+                    </li>
+                    <li class="clo" style="display: none;">
+                        <div>
+                            <time>DD/MM/YYYY 9</time>
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </div>
+                    </li>
+                    <li class="clo" style="display: none;">
+                        <div>
+                            <time>DD/MM/YYYY</time>
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </div>
+                    </li>
+                    <li></li>
+                </ol>
+                <span class="arrow arrow__prev" onclick="scrollMe()">
+                    <i class="fas fa-angle-left"></i>
+                </span>
+                <span class="arrow arrow__next" onclick="scrollMe()">
+                    <i class="fas fa-angle-right"></i>
+                </span>
+            </section>
+        </section>
+        <section class="section">
+
+            <div class="table-responsive" id="patient_details_grid">
+                <table class="table table-striped table-hover table-bordered" id="patientTable">
+                    <thead>
+                        <tr>
+                            <th width="50px" class="text-center">#</th>
+                            <th>Patient Number</th>
+                            <th>City</th>
+                            <th>Diagnosis</th>
+                            <th>Drug</th>
+                            <th width="1%">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td class="text-center"></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><button class="btn btn-primary btn-sm" onclick="show_timeline()">See Timeline</button>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="text-center"></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><button class="btn btn-primary btn-sm" onclick="show_timeline()">See Timeline</button>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="text-center"></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><button class="btn btn-primary btn-sm" onclick="show_timeline()">See Timeline</button>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="text-center"></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><button class="btn btn-primary btn-sm" onclick="show_timeline()">See Timeline</button>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="text-center"></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><button class="btn btn-primary btn-sm" onclick="show_timeline()">See Timeline</button>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="text-center"></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><button class="btn btn-primary btn-sm">See Timeline</button></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        <!--  -->
+    </div>
+</div>
+
+<script class="select2">
+    function addAllColumnHeaders(myList) {
+        var columnSet = [];
+        var headerTr$ = $('<tr/>');
+        for (var i = 0; i < myList.length; i++) {
+            var rowHash = myList[i];
+            for (var key in rowHash) {
+                if ($.inArray(key, columnSet) == -1) {
+
+                    columnSet.push(key);
+                    headerTr$.append($('<th/>').html(key));
+
+                }
+            }
+        }
+        $("#av").append(headerTr$);
+
+        return columnSet;
+    }
+
+    $(document).ready(function () {
+        $('select').select2({
+            placeholder: ""
+        });
+
+        $("#processing").show();
+        $.ajax({
+            type: 'POST',
+            url: '/get_city',
+            contentType: 'application/json',
+            data: {},
+            success: function (data) {
+                data = $.parseJSON(data);
+                $("#selectCity").find('option').remove();
+                $("#selectCity").append('<option value="--Select City--">--Select City--</option>');
+                $.each(data, function (index, value) {
+                    $("#selectCity").append('<option value=' + value + '>' + value + '</option>');
+                });
+
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/get_diagnosis',
+                    contentType: 'application/json',
+                    data: {},
+                    success: function (data) {
+                        data = $.parseJSON(data);
+                        $("#selectdiagnosis").find('option').remove();
+                        $("#selectdiagnosis").append('<option value="--Select Diagnosis--">--Select Diagnosis--</option>');
+                        $.each(data, function (index, value) {
+                            $("#selectdiagnosis").append('<option value=' + value + '>' + value + '</option>');
+                        });
+
+
+                        $.ajax({
+                            type: 'POST',
+                            url: '/get_drug',
+                            contentType: 'application/json',
+                            data: {},
+                            success: function (data) {
+                                data = $.parseJSON(data);
+                                $("#selectdrug").find('option').remove();
+                                $("#selectdrug").append('<option value="--Select Drug--">--Select Drug--</option>');
+                                $.each(data, function (index, value) {
+                                    $("#selectdrug").append('<option value=' + value + '>' + value + '</option>');
+                                });
+
+
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '/get_patient_details',
+                                    contentType: 'application/json',
+                                    data: {},
+                                    success: function (response) {
+                                        debugger;
+                                        
+                                        $("#processing").hide();
+                                        
+                                        var obj = $.parseJSON(response.data);
+                                        if (obj.length > 0) {
+
+                                            var data = obj[0].Table1;
+                                            var table = $("<table />");
+                                            table[0].border = "1";
+
+                                            var row$;
+
+                                            var columns = addAllColumnHeaders(data);
+                                            for (var i = 0; i < data.length; i++) {
+                                                row$ = $('<tr/>');
+
+                                                for (var colIndex = 0; colIndex < columns.length; colIndex++) {
+                                                    var cellValue = data[i][columns[colIndex]];
+
+                                                    if (cellValue == null) { cellValue = ""; }
+
+                                                    row$.append($('<td/>').html(cellValue));
+                                                }
+                                                $("#patientTable").append(row$);
+                                            }
+
+                                        }
+
+                                    },
+                                    error: function () {
+                                        $(this).html("error!");
+                                    }
+                                });
+                            },
+                            error: function () {
+                                $(this).html("error!");
+                            }
+                        });
+                    },
+                    error: function () {
+                        $(this).html("error!");
+                    }
+                });
+            },
+            error: function () {
+                $(this).html("error!");
+            }
+        });
+
+
+    });
+</script>
+
+<script>
+
+    $.ajaxSetup({
+        headers: { "X-CSRFToken": '{{csrf_token}}' }
+    });
+
+    $('#form').unbind().submit(function (e) {
+        e.preventDefault();
+
+        var data = {};
+        var Form = this;
+
+        $.each(this.elements, function (i, v) {
+            var input = $(v);
+            data[input.attr("name")] = input.val();
+        });
+
+        $.ajax({
+            type: 'POST',
+            url: '/table',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (data) {
+                $("#results").html(data);
+                $(".select2").remove();
+
+            },
+            error: function () {
+                $(this).html("error!");
+            }
+        });
+    });
+
+
+
+    $.ajax({
+        type: 'POST',
+        url: '/patient_details_grid',
+        contentType: 'application/json',
+        data: {},
+        success: function (data) {
+            debugger;
+            $("#patient_details_grid").html(data);
+        },
+        error: function () {
+            $(this).html("error!");
+        }
+    });
+
+    function scrollMe() {
+        if ($(".dis").is(":visible")) {
+            $(".dis").hide(400);
+            $(".clo").show(400);
+        }
+        else{
+            $(".clo").hide(400);
+            $(".dis").show(400);
+        }
+    }
+
+    function show_timeline() {
+        $("#patient_timeline").show();
+
+
+
+        // var li_displays = $(".dis");
+
+        // $(li_displays).each(function (index, val){
+        //     debugger;
+        //     $(val).removeClass("dis").addClass("pas");
+        // });
+
+        // var li_displays = $(".clo");
+
+        // $(li_displays).each(function (index, val){
+        //     $(val).removeClass("clo").addClass("dis");
+        // });
+
+
+        // var li_displays = $(".pas");
+
+        // $(li_displays).each(function (index, val){
+        //     $(val).removeClass("pas").addClass("clo");
+        // });
+    }
+
+
+</script>
+
+{% endblock %}

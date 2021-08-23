@@ -1,0 +1,34 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container content-container">
+    <div class="menu-card-container">
+        <div class="row">
+            <div class="col">
+                <a class="menu-card" href="/geo-location-mapping">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div class="menu-card-title">GEO LOCATION MAPPING</div>
+                </a>
+            </div>
+            <div class="col">
+                <a class="menu-card" href="/patients-progression">
+                    <i class="fas fa-code-branch"></i>
+                    <div class="menu-card-title">PATIENTS PROGRESSION</div>
+                </a>
+            </div>
+            <div class="col">
+                <a class="menu-card" href="/drug-summary-statistics">
+                    <i class="far fa-list-alt"></i>
+                    <div class="menu-card-title">DRUG SUMMARY STATISTICS</div>
+                </a>
+            </div>
+            <div class="col">
+                <a class="menu-card" href="/brain-scan-image-analysis">
+                    <i class="fas fa-brain"></i>
+                    <div class="menu-card-title">BRAIN SCAN IMAGE ANALYSIS</div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
