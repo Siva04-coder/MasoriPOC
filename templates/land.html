@@ -1,29 +1,35 @@
 {% extends 'layout.html' %}
 
 {% block content %}
+<style>
+    .correction {
+        padding-right:0px;
+        padding-left: 0px;
+    }
+</style>
 <div class="container content-container">
     <div class="menu-card-container">
         <div class="row">
-            <div class="col">
-                <a class="menu-card" href="/geo-location-mapping">
+            <div class="col correction">
+                <a class="menu-card" href="/geolocation">
                     <i class="fas fa-map-marker-alt"></i>
                     <div class="menu-card-title">GEO LOCATION MAPPING</div>
                 </a>
             </div>
-            <div class="col">
-                <a class="menu-card" href="/patients-progression">
+            <div class="col correction">
+                <a class="menu-card" href="/patientsprogression">
                     <i class="fas fa-code-branch"></i>
                     <div class="menu-card-title">PATIENTS PROGRESSION</div>
                 </a>
             </div>
-            <div class="col">
-                <a class="menu-card" href="/drug-summary-statistics">
+            <div class="col correction">
+                <a class="menu-card" href="/drugsummary">
                     <i class="far fa-list-alt"></i>
                     <div class="menu-card-title">DRUG SUMMARY STATISTICS</div>
                 </a>
             </div>
-            <div class="col">
-                <a class="menu-card" href="/brain-scan-image-analysis">
+            <div class="col correction">
+                <a class="menu-card" href="/brainscan">
                     <i class="fas fa-brain"></i>
                     <div class="menu-card-title">BRAIN SCAN IMAGE ANALYSIS</div>
                 </a>

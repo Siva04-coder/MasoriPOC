@@ -1,19 +1,21 @@
 <nav class="navbar fixed-top">
     <div class="container">
-        <a class="navbar-brand" href="./">
+        <a class="navbar-brand" href="./home">
             Masori Analytics<span>|</span><span>HOME</span>
         </a>
         <ul class="navbar-nav">
-            <li onclick="logout()" style="
-            cursor: pointer;
-            font-size: 14pt;
-            padding-right: 10px;">LogOut</li>
+            <li>{{session["page_name"]}} <a onclick="logout()" style="
+                cursor: pointer; margin-left: 40px;
+                font-size: 14pt; text-decoration: underline;
+                padding-right: 10px;">Sign Out</a></li>
         </ul>
     </div>
 </nav>
 
 <script>
     function logout() {
+        $("#processing").show();
+        
         $.ajax({
             type: 'POST',
             url: '/logout',
@@ -21,7 +23,7 @@
             data: {},
             success: function (data) {
                 if (data == "updated") {
-                    window.location.href = "/home";
+                    window.location.href = "./";
                 }
             },
             error: function () {

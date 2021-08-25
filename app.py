@@ -22,7 +22,7 @@ def login():
     return render_template('login.html')
 
     
-@app.route('/patients-progression')
+@app.route('/patientsprogression')
 def patientsprogression():
     try:
         if session["username"] == "":
@@ -30,7 +30,45 @@ def patientsprogression():
     except:
         return render_template('login.html')
 
+    session["page_name"] = "Patients Progression"
+
     return render_template('patients-progression.html')
+
+@app.route('/geolocation')
+def geolocation():
+    try:
+        if session["username"] == "":
+            return render_template('login.html')
+    except:
+        return render_template('login.html')
+
+    session["page_name"] = "Geo Location Mapping"
+
+    return render_template('geo-location-mapping.html')
+
+@app.route('/drugsummary')
+def drugsummary():
+    try:
+        if session["username"] == "":
+            return render_template('login.html')
+    except:
+        return render_template('login.html')
+
+    session["page_name"] = "Drug Summary Statistics"
+
+    return render_template('drug-summary-statistics.html')
+
+@app.route('/brainscan')
+def brainscan():
+    try:
+        if session["username"] == "":
+            return render_template('login.html')
+    except:
+        return render_template('login.html')
+
+    session["page_name"] = "Brain Scan Image Analysis"
+
+    return render_template('brain-scan-image-analysis.html')
 
 
 @app.route('/patient_details_grid')
@@ -75,9 +113,18 @@ def get_drug():
 
 @app.route('/get_patient_details', methods=['GET', 'POST'])
 def get_patient_details():
-    entPats = db_proxy.get_patient_details('46260','','','')
-    print(entPats.to_json())
-    return flask.jsonify({'data': entPats})
+    entPats = ''
+
+    if request.method == 'POST':
+        zipcode = request.form['zipcode']
+        city = request.form['city']
+        diagnosis = request.form['diagnosis']
+        drug = request.form['drug']
+
+        entPats = db_proxy.get_patient_details(zipcode,city,diagnosis,drug)
+        print(entPats.to_json(orient="index"))
+
+    return entPats.to_json(orient="index")
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():

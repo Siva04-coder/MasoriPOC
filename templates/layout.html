@@ -5,9 +5,8 @@
     <title>Home - Masori</title>
     <!--  -->
     <link rel="stylesheet" href="{{ url_for('static', filename= 'plugins/bootstrap-5.0.2/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename= 'pluginsplugins/select2/select2.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename= 'plugins/select2/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename= 'css/timeline.css') }}">
     <!--  -->
 
@@ -23,7 +22,9 @@
     <div id="processing">Please Wait . . .</div>
     {% include 'nav.html' %}
     
-    {% block content %}{% endblock %}
+    {% block content %}
+    
+    {% endblock %}
 </body>
 
 </html>

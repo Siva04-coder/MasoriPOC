@@ -1,8 +1,12 @@
 {% extends 'layout.html' %}
 
 {% block content %}
+<style>
+    .highlight{
+        background-color: #5ade6a73;
+    }
+</style>
 
-<div class="container content-container">
     <!--  -->
     <section class="section">
 
@@ -10,7 +14,7 @@
             <div class="row">
                 <div class="col">
                     <label class="form-label">Zip Code</label>
-                    <input class="form-control" name="zipcode">
+                    <input class="form-control" name="zipcode" id="zipcodetext">
                 </div>
                 <div class="col">
                     <label class="form-label">City</label>
@@ -19,7 +23,7 @@
                     </select>
                 </div>
                 <div class=" col">
-                    <label class="form-label">Diagnosis</label>
+                    <label class="form-label">Life Style</label>
                     <select style="width: 100%;" name="diagnosis" id="selectdiagnosis">
                         <option value=""></option>
                     </select>
@@ -32,7 +36,7 @@
                 </div>
                 <div class="col">
                     <label class="form-label">&nbsp;</label>
-                    <button class="btn btn-primary w-100">GO</button>
+                    <button class="btn btn-primary w-100" onclick="Search()">GO</button>
                 </div>
             </div>
         </form>
@@ -46,7 +50,7 @@
         <section class="section" id="patient_timeline" style="display: none;">
 
             <!--  -->
-            <button class="btn btn-primary mb-3">Similar Patients</button>
+            <button class="btn btn-primary mb-3" data-toggle="modal" data-target=".bd-example-modal-xl">Similar Patients</button>
             <!--  -->
 
             <section class="timeline">
@@ -135,67 +139,8 @@
                             <th width="1%">Action</th>
                         </tr>
                     </thead>
-                    <tbody>
-
-                        <tr>
-                            <td class="text-center"></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td><button class="btn btn-primary btn-sm" onclick="show_timeline()">See Timeline</button>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td class="text-center"></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td><button class="btn btn-primary btn-sm" onclick="show_timeline()">See Timeline</button>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td class="text-center"></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td><button class="btn btn-primary btn-sm" onclick="show_timeline()">See Timeline</button>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td class="text-center"></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td><button class="btn btn-primary btn-sm" onclick="show_timeline()">See Timeline</button>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td class="text-center"></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td><button class="btn btn-primary btn-sm" onclick="show_timeline()">See Timeline</button>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td class="text-center"></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td><button class="btn btn-primary btn-sm">See Timeline</button></td>
-                        </tr>
-
+                    <tbody id="patient_table">
+                        <td colspan="6" style="text-align: center;">No Records Found.</td>
                     </tbody>
                 </table>
             </div>
@@ -203,6 +148,14 @@
         <!--  -->
     </div>
 </div>
+
+<div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        ...
+      </div>
+    </div>
+  </div>
 
 <script class="select2">
     function addAllColumnHeaders(myList) {
@@ -271,47 +224,7 @@
                                     $("#selectdrug").append('<option value=' + value + '>' + value + '</option>');
                                 });
 
-
-                                $.ajax({
-                                    type: 'POST',
-                                    url: '/get_patient_details',
-                                    contentType: 'application/json',
-                                    data: {},
-                                    success: function (response) {
-                                        debugger;
-                                        
-                                        $("#processing").hide();
-                                        
-                                        var obj = $.parseJSON(response.data);
-                                        if (obj.length > 0) {
-
-                                            var data = obj[0].Table1;
-                                            var table = $("<table />");
-                                            table[0].border = "1";
-
-                                            var row$;
-
-                                            var columns = addAllColumnHeaders(data);
-                                            for (var i = 0; i < data.length; i++) {
-                                                row$ = $('<tr/>');
-
-                                                for (var colIndex = 0; colIndex < columns.length; colIndex++) {
-                                                    var cellValue = data[i][columns[colIndex]];
-
-                                                    if (cellValue == null) { cellValue = ""; }
-
-                                                    row$.append($('<td/>').html(cellValue));
-                                                }
-                                                $("#patientTable").append(row$);
-                                            }
-
-                                        }
-
-                                    },
-                                    error: function () {
-                                        $(this).html("error!");
-                                    }
-                                });
+                                $("#processing").hide();
                             },
                             error: function () {
                                 $(this).html("error!");
@@ -366,58 +279,79 @@
     });
 
 
-
-    $.ajax({
-        type: 'POST',
-        url: '/patient_details_grid',
-        contentType: 'application/json',
-        data: {},
-        success: function (data) {
-            debugger;
-            $("#patient_details_grid").html(data);
-        },
-        error: function () {
-            $(this).html("error!");
-        }
-    });
-
     function scrollMe() {
         if ($(".dis").is(":visible")) {
             $(".dis").hide(400);
             $(".clo").show(400);
         }
-        else{
+        else {
             $(".clo").hide(400);
             $(".dis").show(400);
         }
     }
 
-    function show_timeline() {
-        $("#patient_timeline").show();
-
-
-
-        // var li_displays = $(".dis");
-
-        // $(li_displays).each(function (index, val){
-        //     debugger;
-        //     $(val).removeClass("dis").addClass("pas");
-        // });
-
-        // var li_displays = $(".clo");
-
-        // $(li_displays).each(function (index, val){
-        //     $(val).removeClass("clo").addClass("dis");
-        // });
-
-
-        // var li_displays = $(".pas");
-
-        // $(li_displays).each(function (index, val){
-        //     $(val).removeClass("pas").addClass("clo");
-        // });
+    function show_timeline(btnElement) {
+        $("tr").removeClass("highlight");
+        var tr = $(btnElement).closest('tr');
+        $(tr).addClass("highlight");
+        $("#patient_timeline").slideUp();
+        $("#patient_timeline").slideDown();
+        window.scrollTo(0, 0);
     }
 
+    function Search() {
+        var data = new FormData();
+
+        data.append('zipcode', $("#zipcodetext").val());
+        data.append('city', $("#selectCity").val());
+        data.append('diagnosis', $("#selectdiagnosis").val());
+        data.append('drug', $("#selectdrug").val());
+
+        $("#processing").show();
+
+        $.ajax({
+            type: 'POST',
+            enctype: 'multipart/form-data',
+            url: './get_patient_details',
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 800000,
+            data: data,
+            success: function (response) {
+                try {
+                    $("#patient_table").empty();
+                    var obj = $.parseJSON(response);
+                    if (Object.keys(obj).length > 0) {
+
+                        for (var i = 0; i < Object.keys(obj).length; i++) {
+                            var row = $("<tr/>");
+                            row.append($('<td/>').html(''));
+                            row.append($('<td/>').html(obj[i]["Patient Number"]));
+                            row.append($('<td/>').html(obj[i]["City"]));
+                            row.append($('<td/>').html(obj[i]["Diagnosis"]));
+                            row.append($('<td/>').html(obj[i]["Drug"]));
+                            var btn = $('<button onclick="show_timeline(this)" />').addClass("btn btn-primary btn-sm").text("See Timeline");
+
+                            row.append($('<td/>').append(btn));
+                            $("#patient_table").append(row);
+                        }
+                    }
+                    else {
+                        var row = $("<tr/>");
+                        row.append($('<td colspan="6" style="text-align:center" />').html('No Records Found.'));
+                        $("#patient_table").append(row);
+                    }
+                    $("#processing").hide();
+                }
+                catch { $("#processing").hide(); }
+            },
+            error: function (err) {
+                debugger;
+                $(this).html("error!");
+            }
+        });
+    }
 
 </script>
 

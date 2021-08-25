@@ -23,16 +23,17 @@ def get_city():
     return cities
 
 def get_diagnosis():
-    entity = pd.read_sql_query("Select Distinct D.Therapeutic_Area as Diagnosis from [dbo].[FOUND_RFQ_Residential_History] R "
-    "Join [dbo].[Concomitant_Medications] C On R.patno = C.Patient_Number_PATNO "
-    "Join [dbo].[Drug_To_Therapeutic_Area] D On C.WHO_DRUG_NAME_WHODRUG = D.Drug_Name order by Diagnosis", conn)
-    entity = list(filter(lambda x: str(x) != '', entity['Diagnosis'].tolist()))
+    entity = pd.read_sql_query("Select distinct category as Category from Filtered_Data", conn)
+    entity = list(filter(lambda x: str(x) != '', entity['Category'].tolist()))
     return entity
 
 def get_drug():
-    entityDrug = pd.read_sql_query("Select Distinct D.Drug_Name as Drug from [dbo].[FOUND_RFQ_Residential_History] R "
-    "Join [dbo].[Concomitant_Medications] C On R.patno = C.Patient_Number_PATNO "
-    "Join [dbo].[Drug_To_Therapeutic_Area] D On C.WHO_DRUG_NAME_WHODRUG = D.Drug_Name order by Drug", conn)
+    entityDrug = pd.read_sql_query("select distinct value as Drug from Filtered_Data"
+        " unpivot"
+        " ("
+        " value"
+        " for col in (Medicine_On_Stage_1, Medicine_On_Stage_2, Medicine_On_Stage_3)"
+        " ) un Where value!='' order by value;", conn)
     entityDrug = list(filter(lambda x: str(x) != '', entityDrug['Drug'].tolist()))
     return entityDrug
 
