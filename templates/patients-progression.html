@@ -2,44 +2,43 @@
 
 {% block content %}
 <style>
-    .highlight{
+    .highlight {
         background-color: #5ade6a73;
     }
 </style>
 
-    <!--  -->
+<!--  -->
+<div class="container content-container">
     <section class="section">
 
-        <form id="form">
-            <div class="row">
-                <div class="col">
-                    <label class="form-label">Zip Code</label>
-                    <input class="form-control" name="zipcode" id="zipcodetext">
-                </div>
-                <div class="col">
-                    <label class="form-label">City</label>
-                    <select style="width: 100%;" name="city" id="selectCity">
-                        <option value=""></option>
-                    </select>
-                </div>
-                <div class=" col">
-                    <label class="form-label">Life Style</label>
-                    <select style="width: 100%;" name="diagnosis" id="selectdiagnosis">
-                        <option value=""></option>
-                    </select>
-                </div>
-                <div class="col">
-                    <label class="form-label">Drug</label>
-                    <select style="width: 100%;" name="drug" id="selectdrug">
-                        <option value=""></option>
-                    </select>
-                </div>
-                <div class="col">
-                    <label class="form-label">&nbsp;</label>
-                    <button class="btn btn-primary w-100" onclick="Search()">GO</button>
-                </div>
+        <div class="row">
+            <div class="col">
+                <label class="form-label">Zip Code</label>
+                <input class="form-control" name="zipcode" id="zipcodetext">
             </div>
-        </form>
+            <div class="col">
+                <label class="form-label">City</label>
+                <select style="width: 100%;" name="city" id="selectCity">
+                    <option value=""></option>
+                </select>
+            </div>
+            <div class=" col">
+                <label class="form-label">Life Style</label>
+                <select style="width: 100%;" name="diagnosis" id="selectdiagnosis">
+                    <option value=""></option>
+                </select>
+            </div>
+            <div class="col">
+                <label class="form-label">Drug</label>
+                <select style="width: 100%;" name="drug" id="selectdrug">
+                    <option value=""></option>
+                </select>
+            </div>
+            <div class="col">
+                <label class="form-label">&nbsp;</label>
+                <button class="btn btn-primary w-100" onclick="Search()">GO</button>
+            </div>
+        </div>
 
     </section>
 
@@ -50,7 +49,8 @@
         <section class="section" id="patient_timeline" style="display: none;">
 
             <!--  -->
-            <button class="btn btn-primary mb-3" data-toggle="modal" data-target=".bd-example-modal-xl">Similar Patients</button>
+            <button class="btn btn-primary mb-3" data-toggle="modal" data-target=".bd-example-modal-xl">Similar
+                Patients</button>
             <!--  -->
 
             <section class="timeline">
@@ -149,14 +149,6 @@
     </div>
 </div>
 
-<div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-      <div class="modal-content">
-        ...
-      </div>
-    </div>
-  </div>
-
 <script class="select2">
     function addAllColumnHeaders(myList) {
         var columnSet = [];
@@ -205,7 +197,7 @@
                     success: function (data) {
                         data = $.parseJSON(data);
                         $("#selectdiagnosis").find('option').remove();
-                        $("#selectdiagnosis").append('<option value="--Select Diagnosis--">--Select Diagnosis--</option>');
+                        $("#selectdiagnosis").append('<option value="--Select LifeStyle--">--Select LifeStyle--</option>');
                         $.each(data, function (index, value) {
                             $("#selectdiagnosis").append('<option value=' + value + '>' + value + '</option>');
                         });

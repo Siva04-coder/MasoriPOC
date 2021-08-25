@@ -23,7 +23,7 @@ def get_city():
     return cities
 
 def get_diagnosis():
-    entity = pd.read_sql_query("Select distinct category as Category from Filtered_Data", conn)
+    entity = pd.read_sql_query("Select distinct LifeStyle as Category from Filtered_Data", conn)
     entity = list(filter(lambda x: str(x) != '', entity['Category'].tolist()))
     return entity
 
