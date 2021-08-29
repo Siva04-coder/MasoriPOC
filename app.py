@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, session
 import flask
 from flask.templating import render_template_string
-import db_proxy
 import json
 
 app = Flask(__name__)
@@ -92,7 +91,7 @@ def logon():
         username = request.form['username']
         password = request.form['password']
 
-        res = db_proxy.check_user(username, password)
+        res = True
 
         if res == True:
             login_users.append(username)
@@ -101,58 +100,6 @@ def logon():
     print('sdfasdfads', res)
     return json.dumps(res)
 
-
-@app.route('/get_city', methods=['GET', 'POST'])
-def get_city():
-    cities = db_proxy.get_city()
-    return json.dumps(cities)
-
-
-@app.route('/get_diagnosis', methods=['GET', 'POST'])
-def get_diagnosis():
-    ent = db_proxy.get_diagnosis()
-    return json.dumps(ent)
-
-
-@app.route('/get_drug', methods=['GET', 'POST'])
-def get_drug():
-    entDrug = db_proxy.get_drug()
-    return json.dumps(entDrug)
-
-
-@app.route('/get_patient_details', methods=['GET', 'POST'])
-def get_patient_details():
-    entPats = ''
-
-    if request.method == 'POST':
-        zipcode = request.form['zipcode']
-        city = request.form['city']
-        diagnosis = request.form['diagnosis']
-        drug = request.form['drug']
-
-        city = city.replace("'", "''''")
-        diagnosis = diagnosis.replace("'", "''''")
-        drug = drug.replace("'", "''''")
-
-        entPats = db_proxy.get_patient_details(zipcode, city, diagnosis, drug)
-        print(entPats.to_json(orient="index"))
-
-    return entPats.to_json(orient="index")
-
-@app.route('/get_similar_patient_details', methods=['GET', 'POST'])
-def get_similar_patient_details():
-    entPats = ''
-
-    if request.method == 'POST':
-        patientnumber = request.form['patientnumber']
-        lifestyle = request.form['lifestyle']
-
-        lifestyle = lifestyle.replace("'", "''''")
-
-        entPats = db_proxy.get_similar_patient_details(patientnumber, lifestyle)
-        print(entPats.to_json(orient="index"))
-
-    return entPats.to_json(orient="index")
 
 
 @app.route('/logout', methods=['GET', 'POST'])
