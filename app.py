@@ -167,4 +167,3 @@ def logout():
 
     return status
 
-
