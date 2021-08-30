@@ -3,11 +3,7 @@ import pyodbc
 import pandas as pd
 
 
-conn = pyodbc.connect('Driver={SQL Server Native Client 11.0};'
-                      'Server=localhost;'
-                      'Port=1433;'
-                      'Database=PPMI_LATEST;'
-                      'Trusted_Connection=yes;')
+conn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:ppmipoc.database.windows.net;Port=1433;Database=PPMI_LATEST;UID=ppmiadmin;PWD=Masori123$')
 
 
 def get_city():
