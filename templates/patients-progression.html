@@ -463,6 +463,7 @@
                                 var Symptom = '';
                                 var Is_GMR_Changed = obj[i]["Is_GMR_Changed"];
                                 var MRI_Scan_Stage = obj[i]["MRI_Scan_Stage"];
+                                var StageCnt = 1;
 
                                 for (cnt = 0; cnt <= 8; cnt++) {
                                     try {
@@ -470,7 +471,7 @@
                                         var stageVar = 'Medicine_On_Stage_' + (cnt + 1).toString();
                                         var TAVar = 'TA_On_Stage_' + (cnt + 1).toString();
                                         var symptomVar = 'Symptom_On_Stage_' + (cnt + 1).toString();
-                                        var MRI_Date = (cnt + 1).toString();
+                                        var MRI_Date = StageCnt.toString();
 
                                         if (obj[i][dateVar] != undefined && obj[i][dateVar] != "" &&
                                             obj[i][stageVar] != undefined && obj[i][stageVar] != "" && obj[i][stageVar] != "null") {
@@ -501,6 +502,8 @@
                                                 Symptom = obj[i][symptomVar];
                                             else
                                                 Symptom = Symptom + '@' + obj[i][symptomVar];
+
+                                            StageCnt = StageCnt + 1;
                                         }
                                     }
                                     catch { }
@@ -612,6 +615,7 @@
                             var Symptom = '';
                             var Is_GMR_Changed = obj[i]["Is_GMR_Changed"];
                             var MRI_Scan_Stage = obj[i]["MRI_Scan_Stage"];
+                            var StageCnt = 1;
 
                             for (cnt = 0; cnt <= 8; cnt++) {
                                 try {
@@ -619,7 +623,7 @@
                                     var stageVar = 'Medicine_On_Stage_' + (cnt + 1).toString();
                                     var TAVar = 'TA_On_Stage_' + (cnt + 1).toString();
                                     var symptomVar = 'Symptom_On_Stage_' + (cnt + 1).toString();
-                                    var MRI_Date = (cnt + 1).toString();
+                                    var MRI_Date = StageCnt.toString();
 
                                     if (obj[i][dateVar] != undefined && obj[i][dateVar] != "" &&
                                         obj[i][stageVar] != undefined && obj[i][stageVar] != "" && obj[i][stageVar] != "null") {
@@ -650,6 +654,8 @@
                                             Symptom = obj[i][symptomVar];
                                         else
                                             Symptom = Symptom + '@' + obj[i][symptomVar];
+                                        
+                                        StageCnt = StageCnt + 1;
                                     }
                                 }
                                 catch { }
