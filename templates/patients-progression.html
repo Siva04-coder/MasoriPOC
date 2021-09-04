@@ -49,7 +49,7 @@
         <section class="section" id="patient_timeline" style="display: none;">
 
             <!--  -->
-            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop" style="margin-bottom: 0px !important"
                 onclick="similarTrigger()">Similar
                 Patients</button>
             <!--  -->
@@ -74,9 +74,9 @@
                             <th width="50px" class="text-center">#</th>
                             <th>Patient Number</th>
                             <th>City</th>
-                            <th>Diagnosis</th>
-                            <th>Drug</th>
-                            <th>Life Style</th>
+                            <th>Current Diagnosis</th>
+                            <th>Current Drug</th>
+                            <th>Pattern</th>
                             <th width="1%">Action</th>
                         </tr>
                     </thead>
@@ -121,9 +121,9 @@
                             <th width="50px" class="text-center">#</th>
                             <th>Patient Number</th>
                             <th>City</th>
-                            <th>Diagnosis</th>
-                            <th>Drug</th>
-                            <th>Life Style</th>
+                            <th>Current Diagnosis</th>
+                            <th>Current Drug</th>
+                            <th>Pattern</th>
                             <th width="1%">Action</th>
                         </tr>
                     </thead>
@@ -194,7 +194,8 @@
                         $("#selectdiagnosis").find('option').remove();
                         $("#selectdiagnosis").append('<option value="--Select Diagnosis--">--Select Diagnosis--</option>');
                         $.each(data, function (index, value) {
-                            $("#selectdiagnosis").append('<option value=' + value + '>' + value + '</option>');
+                            if (value != 'Other Rx')
+                                $("#selectdiagnosis").append('<option value=' + value + '>' + value + '</option>');
                         });
 
 
@@ -296,10 +297,26 @@
                 li = $('<li class="dis">');
             }
             var div = $('<div>');
-            div.append('<time>' + val + '</time>');
-            div.append('<b>Stage: </b>' + taArray[idx].replace("|", "'") + '<br>');
-            div.append('<b>Medicine: </b>' + stageArray[idx].replace("|", "'") + '<br>');
-            div.append('<b>Symptom: </b>' + symptomArray[idx].replace("|", "'") + '<br>');
+            if (val.indexOf('|') != -1) {
+                var valOnly = val.split('|')[0];
+                var mri_msg = val.split('|')[1];
+                div.append('<time>' + valOnly + '</time>');
+                div.append('<b>Stage: </b>' + taArray[idx].replace("|", "'") + '<br>');
+                div.append('<b>Medicine: </b>' + stageArray[idx].replace("|", "'") + '<br>');
+                div.append('<b>Symptom: </b>' + symptomArray[idx].replace("|", "'") + '<br>');
+                if (mri_msg != undefined) {
+                    if (mri_msg != '') {
+                        div.append('<b style="background-color: #ffff0085">' + mri_msg + '</b>');
+                    }
+                }
+            }
+            else {
+                div.append('<time>' + val + '</time>');
+                div.append('<b>Stage: </b>' + taArray[idx].replace("|", "'") + '<br>');
+                div.append('<b>Medicine: </b>' + stageArray[idx].replace("|", "'") + '<br>');
+                div.append('<b>Symptom: </b>' + symptomArray[idx].replace("|", "'") + '<br>');
+            }
+
 
             li.append(div);
 
@@ -348,11 +365,25 @@
                 li = $('<li class="dis">');
             }
             var div = $('<div>');
-            div.append('<time>' + val + '</time>');
-            div.append('<b>Stage: </b>' + taArray[idx].replace("|", "'") + '<br>');
-            div.append('<b>Medicine: </b>' + stageArray[idx].replace("|", "'") + '<br>');
-            div.append('<b>Symptom: </b>' + symptomArray[idx].replace("|", "'") + '<br>');
-
+            if (val.indexOf('|') != -1) {
+                var valOnly = val.split('|')[0];
+                var mri_msg = val.split('|')[1];
+                div.append('<time>' + valOnly + '</time>');
+                div.append('<b>Stage: </b>' + taArray[idx].replace("|", "'") + '<br>');
+                div.append('<b>Medicine: </b>' + stageArray[idx].replace("|", "'") + '<br>');
+                div.append('<b>Symptom: </b>' + symptomArray[idx].replace("|", "'") + '<br>');
+                if (mri_msg != undefined) {
+                    if (mri_msg != '') {
+                        div.append('<b style="background-color: #ffff0085">' + mri_msg + '</b>');
+                    }
+                }
+            }
+            else {
+                div.append('<time>' + val + '</time>');
+                div.append('<b>Stage: </b>' + taArray[idx].replace("|", "'") + '<br>');
+                div.append('<b>Medicine: </b>' + stageArray[idx].replace("|", "'") + '<br>');
+                div.append('<b>Symptom: </b>' + symptomArray[idx].replace("|", "'") + '<br>');
+            }
             li.append(div);
 
             $("#patient_timeline_popup ol").append(li);
@@ -422,7 +453,7 @@
                                 row.append($('<td/>').html(''));
                                 row.append($('<td/>').html(obj[i]["Patient_Number"]));
                                 row.append($('<td/>').html(obj[i]["City"]));
-                                row.append($('<td/>').html(obj[i]["Current_TA_On_Stage"]));
+                                row.append($('<td/>').html(obj[i]["Current_TA_On_Stage"] == "Other Rx" ? "Normal" : obj[i]["Current_TA_On_Stage"]));
                                 row.append($('<td/>').html(obj[i]["Current_Medicine"]));
                                 row.append($('<td/>').html(obj[i]["LifeStyle"]));
 
@@ -430,29 +461,41 @@
                                 var stage = '';
                                 var TA = '';
                                 var Symptom = '';
+                                var Is_GMR_Changed = obj[i]["Is_GMR_Changed"];
+                                var MRI_Scan_Stage = obj[i]["MRI_Scan_Stage"];
+
                                 for (cnt = 0; cnt <= 8; cnt++) {
                                     try {
                                         var dateVar = 'Medicine_Date_On_Stage_' + (cnt + 1).toString();
                                         var stageVar = 'Medicine_On_Stage_' + (cnt + 1).toString();
                                         var TAVar = 'TA_On_Stage_' + (cnt + 1).toString();
                                         var symptomVar = 'Symptom_On_Stage_' + (cnt + 1).toString();
+                                        var MRI_Date = (cnt + 1).toString();
 
                                         if (obj[i][dateVar] != undefined && obj[i][dateVar] != "" &&
-                                        obj[i][stageVar] != undefined && obj[i][stageVar] != "" && obj[i][stageVar] != "null") {
-                                            if (date == '')
+                                            obj[i][stageVar] != undefined && obj[i][stageVar] != "" && obj[i][stageVar] != "null") {
+                                            if (date == '') {
                                                 date = TryToConvertToString(obj[i][dateVar]);
-                                            else
+                                            }
+                                            else {
                                                 date = date + '@' + TryToConvertToString(obj[i][dateVar]);
+                                            }
+
+                                            if (MRI_Date == MRI_Scan_Stage) {
+                                                if (Is_GMR_Changed == 'Yes') {
+                                                    date = date + '|GMR changed in latest MRI Scan.'
+                                                }
+                                            }
 
                                             if (stage == '')
-                                                stage = obj[i][stageVar];
+                                                stage = (obj[i][stageVar] == "Other Rx" ? "Normal" : obj[i][stageVar]);
                                             else
-                                                stage = stage + '@' + obj[i][stageVar];
+                                                stage = stage + '@' + (obj[i][stageVar] == "Other Rx" ? "Normal" : obj[i][stageVar]);
 
                                             if (TA == '')
-                                                TA = obj[i][TAVar];
+                                                TA = (obj[i][TAVar] == "Other Rx" ? "Normal" : obj[i][TAVar]);
                                             else
-                                                TA = TA + '@' + obj[i][TAVar];
+                                                TA = TA + '@' + (obj[i][TAVar] == "Other Rx" ? "Normal" : obj[i][TAVar]);
 
                                             if (Symptom == '')
                                                 Symptom = obj[i][symptomVar];
@@ -559,37 +602,49 @@
                             row.append($('<td/>').html(''));
                             row.append($('<td/>').html(obj[i]["Patient_Number"]));
                             row.append($('<td/>').html(obj[i]["City"]));
-                            row.append($('<td/>').html(obj[i]["Current_TA_On_Stage"]));
+                            row.append($('<td/>').html(obj[i]["Current_TA_On_Stage"] == "Other Rx" ? "Normal" : obj[i]["Current_TA_On_Stage"]));
                             row.append($('<td/>').html(obj[i]["Current_Medicine"]));
                             row.append($('<td/>').html(obj[i]["LifeStyle"]));
-
+                            
                             var date = '';
                             var stage = '';
                             var TA = '';
                             var Symptom = '';
+                            var Is_GMR_Changed = obj[i]["Is_GMR_Changed"];
+                            var MRI_Scan_Stage = obj[i]["MRI_Scan_Stage"];
+
                             for (cnt = 0; cnt <= 8; cnt++) {
                                 try {
                                     var dateVar = 'Medicine_Date_On_Stage_' + (cnt + 1).toString();
                                     var stageVar = 'Medicine_On_Stage_' + (cnt + 1).toString();
                                     var TAVar = 'TA_On_Stage_' + (cnt + 1).toString();
                                     var symptomVar = 'Symptom_On_Stage_' + (cnt + 1).toString();
+                                    var MRI_Date = (cnt + 1).toString();
 
                                     if (obj[i][dateVar] != undefined && obj[i][dateVar] != "" &&
                                         obj[i][stageVar] != undefined && obj[i][stageVar] != "" && obj[i][stageVar] != "null") {
-                                        if (date == '')
+                                        if (date == '') {
                                             date = TryToConvertToString(obj[i][dateVar]);
-                                        else
+                                        }
+                                        else {
                                             date = date + '@' + TryToConvertToString(obj[i][dateVar]);
+                                        }
+
+                                        if (MRI_Date == MRI_Scan_Stage) {
+                                            if (Is_GMR_Changed == 'Yes') {
+                                                date = date + '|GMR changed in latest MRI Scan.'
+                                            }
+                                        }
 
                                         if (stage == '')
-                                            stage = obj[i][stageVar];
+                                            stage = (obj[i][stageVar] == "Other Rx" ? "Normal" : obj[i][stageVar]);
                                         else
-                                            stage = stage + '@' + obj[i][stageVar];
+                                            stage = stage + '@' + (obj[i][stageVar] == "Other Rx" ? "Normal" : obj[i][stageVar]);
 
                                         if (TA == '')
-                                            TA = obj[i][TAVar];
+                                            TA = (obj[i][TAVar] == "Other Rx" ? "Normal" : obj[i][TAVar]);
                                         else
-                                            TA = TA + '@' + obj[i][TAVar];
+                                            TA = TA + '@' + (obj[i][TAVar] == "Other Rx" ? "Normal" : obj[i][TAVar]);
 
                                         if (Symptom == '')
                                             Symptom = obj[i][symptomVar];
