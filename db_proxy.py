@@ -37,7 +37,7 @@ def get_drug():
 
 
 def check_user(username, password):
-    user = pd.read_sql_query("Select * from [dbo].[App_Users] Where username='" +
+    user = pd.read_sql_query("Select * from [dbo].[Users] Where username='" +
                              username+"' and password='"+password+"' and status='Active'", conn)
     if user.empty:
         return False
