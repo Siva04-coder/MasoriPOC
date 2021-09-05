@@ -5,7 +5,7 @@ import pandas as pd
 
 conn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:ppmipoc.database.windows.net;Port=1433;Database=PPMI_LATEST;UID=ppmiadmin;PWD=Masori123$')
 
-#conn = pyodbc.connect('Driver={SQL Server Native Client 11.0};Server=localhost;Port=1433;Database=PPMI_LATEST;Trusted_Connection=yes;')
+#conn = pyodbc.connect('Driver={SQL Server Native Client 11.0};Server=localhost;Database=PPMI_LATEST;Trusted_Connection=yes;')
 
 
 def get_city():
@@ -24,7 +24,7 @@ def get_diagnosis():
 
 def get_drug():
     entityDrug = pd.read_sql_query(
-        "Select distinct value as Drug from [dbo].[Filtered_Data] "
+        "Select distinct value as Current_Medicine from [dbo].[Filtered_Data] "
         "unpivot "
         "( "
         "value "
