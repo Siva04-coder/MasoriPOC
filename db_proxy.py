@@ -58,3 +58,10 @@ def get_patient_details(zipcode, city, diagnosis, drug):
     p_det = pd.read_sql_query(query, conn)
 
     return p_det
+
+def get_similar_patient_details(patientnumber, lifestyle):
+    query = "Exec [dbo].[Get_Similar_Patient_Details] '" + \
+        patientnumber + "','"+lifestyle+"'"
+    p_det = pd.read_sql_query(query, conn)
+
+    return p_det
