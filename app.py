@@ -16,6 +16,9 @@ def home():
             return render_template('login.html')
     except:
         return render_template('login.html')
+    
+    session["page_name"] = ""
+    
     return render_template('land.html')
 
 
