@@ -16,9 +16,9 @@ def home():
             return render_template('login.html')
     except:
         return render_template('login.html')
-    
+
     session["page_name"] = ""
-    
+
     return render_template('land.html')
 
 
@@ -138,9 +138,10 @@ def get_patient_details():
         drug = drug.replace("'", "''''")
 
         entPats = db_proxy.get_patient_details(zipcode, city, diagnosis, drug)
-        print(entPats.to_json(orient="index"))
+        # print(entPats.to_json(orient="index"))
 
     return entPats.to_json(orient="index")
+
 
 @app.route('/get_similar_patient_details', methods=['GET', 'POST'])
 def get_similar_patient_details():
@@ -152,8 +153,24 @@ def get_similar_patient_details():
 
         lifestyle = lifestyle.replace("'", "''''")
 
-        entPats = db_proxy.get_similar_patient_details(patientnumber, lifestyle)
-        print(entPats.to_json(orient="index"))
+        entPats = db_proxy.get_similar_patient_details(
+            patientnumber, lifestyle)
+
+        # print(entPats.to_json(orient="index"))
+
+    return entPats.to_json(orient="index")
+
+
+@app.route('/get_hcp_details', methods=['GET', 'POST'])
+def get_hcp_details():
+    entPats = ''
+
+    if request.method == 'POST':
+        city = request.form['currentCity']
+
+        entPats = db_proxy.get_hcp_details(city)
+
+        # print(entPats.to_json(orient="index"))
 
     return entPats.to_json(orient="index")
 
@@ -169,4 +186,3 @@ def logout():
         pass
 
     return status
-
