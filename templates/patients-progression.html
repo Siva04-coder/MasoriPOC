@@ -49,9 +49,12 @@
         <section class="section" id="patient_timeline" style="display: none;">
 
             <!--  -->
-            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop" style="margin-bottom: 0px !important"
-                onclick="similarTrigger()">Similar
+            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                style="margin-bottom: 0px !important" onclick="similarTrigger()">Similar
                 Patients</button>
+
+            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop_1"
+                style="margin-bottom: 0px !important" onclick="showHCP()">Show HCP Details</button>
             <!--  -->
 
             <section class="timeline">
@@ -139,11 +142,50 @@
     </div>
 </div>
 
+<div class="modal fade" id="staticBackdrop_1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-xl" style="max-width: 85% !important;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">HCP Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <table class="table table-striped table-hover table-bordered" id="hcpDetailsTable">
+                    <thead>
+                        <tr>
+                            <th width="50px" class="text-center">#</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>NPI</th>
+                            <th>Specialty</th>
+                            <th>Address 1</th>
+                            <th>City</th>
+                            <th>State</th>
+                            <th>ZIP</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="hcp_details_table">
+                        <tr>
+                            <td colspan="9" style="text-align: center;">No Records Found.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script class="select2">
     var isScroll = true;
     var isScrollPopup = true;
     var currentLifestyle = '';
     var currentPatientnumber = '';
+    var currentCity = '';
 
     function addAllColumnHeaders(myList) {
         var columnSet = [];
@@ -280,7 +322,7 @@
         }
     }
 
-    function show_timeline(btnElement, date, stage, ta, symptom, lifestyle, patientnumber) {
+    function show_timeline(btnElement, date, stage, ta, symptom, lifestyle, patientnumber, hcp_city) {
         var dateArray = date.split("@");
         var stageArray = stage.split("@");
         var taArray = ta.split("@");
@@ -334,6 +376,7 @@
 
         currentLifestyle = lifestyle;
         currentPatientnumber = patientnumber;
+        currentCity = hcp_city
 
         $("#patient_timeline ol").append($("<li>"));
 
@@ -517,8 +560,7 @@
                                 catch { }
 
                                 try {
-                                    var btn = $('<button onclick="show_timeline(this, \'' + date + '\', \'' + stage + '\', \'' + TA + '\', \'' + Symptom + '\', \'' + obj[i]["LifeStyle"] + '\', \'' + obj[i]["Patient_Number"] + '\')" />').addClass("btn btn-primary btn-sm").text("See Timeline");
-
+                                    var btn = $('<button onclick="show_timeline(this, \'' + date + '\', \'' + stage + '\', \'' + TA + '\', \'' + Symptom + '\', \'' + obj[i]["LifeStyle"] + '\', \'' + obj[i]["Patient_Number"] + '\', \'' + obj[i]["City"] + '\')" />').addClass("btn btn-primary btn-sm").text("See Timeline");
                                     row.append($('<td/>').append(btn));
                                     $("#patient_table").append(row);
                                 }
@@ -580,6 +622,7 @@
         data.append('patientnumber', $("#zipcodetext").val());
         data.append('lifestyle', currentLifestyle);
 
+
         $("#patient_timeline_popup ol").empty();
         $("#patient_timeline_popup").slideUp();
 
@@ -608,7 +651,7 @@
                             row.append($('<td/>').html(obj[i]["Current_TA_On_Stage"] == "Other Rx" ? "Normal" : obj[i]["Current_TA_On_Stage"]));
                             row.append($('<td/>').html(obj[i]["Current_Medicine"]));
                             row.append($('<td/>').html(obj[i]["LifeStyle"]));
-                            
+
                             var date = '';
                             var stage = '';
                             var TA = '';
@@ -654,7 +697,7 @@
                                             Symptom = obj[i][symptomVar];
                                         else
                                             Symptom = Symptom + '@' + obj[i][symptomVar];
-                                        
+
                                         StageCnt = StageCnt + 1;
                                     }
                                 }
@@ -694,6 +737,69 @@
 
         $("#processing").show()
     }
+
+    function showHCP() {
+
+        $("#patient_timeline_popup .clo").hide(400);
+        $("#patient_timeline_popup .dis").show(400);
+
+        var data = new FormData();
+
+        data.append('patientnumber', $("#zipcodetext").val());
+        data.append('currentCity', currentCity);
+
+        $("#patient_timeline_popup ol").empty();
+        $("#patient_timeline_popup").slideUp();
+
+        $("#processing").show();
+
+        $.ajax({
+            type: 'POST',
+            url: './get_hcp_details',
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 800000,
+            data: data,
+            success: function (response) {
+                try {
+                    $("#hcp_details_table").empty();
+                    var obj = $.parseJSON(response);
+                    if (Object.keys(obj).length > 0) {
+
+                        for (var i = 0; i < Object.keys(obj).length; i++) {
+                            var row = $("<tr/>");
+                            row.append($('<td/>').html(''));
+                            row.append($('<td/>').html(obj[i]["First_Name"]));
+                            row.append($('<td/>').html(obj[i]["Last_Name"]));
+                            row.append($('<td/>').html(obj[i]["NPI"]));
+                            row.append($('<td/>').html(obj[i]["Specialty"]));
+                            row.append($('<td/>').html(obj[i]["Address_1"]));
+                            row.append($('<td/>').html(obj[i]["City"]));
+                            row.append($('<td/>').html(obj[i]["State"]));
+                            row.append($('<td/>').html(obj[i]["ZIP"]));
+                            $("#hcp_details_table").append(row);
+
+                        }
+                    }
+                    else {
+                        var row = $("<tr/>");
+                        row.append($('<td colspan="9" style="text-align:center" />').html('No Records Found.'));
+                        $("#hcp_details_table").append(row);
+                    }
+                    $("#processing").hide();
+                }
+                catch { $("#processing").hide(); }
+            },
+            error: function (err) {
+                debugger;
+                $(this).html("error!");
+            }
+        });
+
+        $("#processing").show()
+    }
+
 
     function scrollMeinPopup() {
         if (isScrollPopup) {
