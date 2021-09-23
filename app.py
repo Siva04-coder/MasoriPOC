@@ -187,5 +187,3 @@ def logout():
 
     return status
 
-
-app.run(port=4858)
