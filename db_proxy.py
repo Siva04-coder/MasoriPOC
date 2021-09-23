@@ -3,9 +3,8 @@ import pyodbc
 import pandas as pd
 
 
-conn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:ppmipoc.database.windows.net;Port=1433;Database=PPMI_LATEST;UID=ppmiadmin;PWD=Masori123$')
-
-#conn = pyodbc.connect('Driver={SQL Server Native Client 11.0};Server=localhost;Database=PPMI_LATEST;Trusted_Connection=yes;')
+conn = pyodbc.connect(
+    'Driver={SQL Server Native Client 11.0};Server=localhost;Database=PPMI_LATEST;Trusted_Connection=yes;')
 
 
 def get_city():
@@ -59,9 +58,18 @@ def get_patient_details(zipcode, city, diagnosis, drug):
 
     return p_det
 
+
 def get_similar_patient_details(patientnumber, lifestyle):
     query = "Exec [dbo].[Get_Similar_Patient_Details] '" + \
         patientnumber + "','"+lifestyle+"'"
     p_det = pd.read_sql_query(query, conn)
 
+    return p_det
+
+
+def get_hcp_details(city):
+    # query = "Exec [dbo].[Get_Similar_Patient_Details] '" + \patientnumber + "','"+lifestyle+"'"
+    query = "Exec [dbo].[Get_HCP_Details] '" + \
+        city + "'"
+    p_det = pd.read_sql_query(query, conn)
     return p_det
