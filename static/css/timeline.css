@@ -69,6 +69,7 @@
     top: -10px;
     transform: translateY(-100%);
     border-left: 2px solid #ddd;
+    width: 280px;
 }
 
 .timeline ol li:nth-child(odd) div::before {
@@ -81,7 +82,8 @@
     top: calc(100% + 12px);
     border-right: 2px solid #ddd;
     text-align: right;
-    left: calc(100% - 230px);
+    left: calc(100% - 272px);
+    width: 280px;
 }
 
 .timeline ol li:nth-child(even) div::before {

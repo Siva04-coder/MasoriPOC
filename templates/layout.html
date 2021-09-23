@@ -2,9 +2,9 @@
 <html lang="en">
 
 <head>
-    <title>Home - Masori</title>
+    <title>Home - MASORI</title>
     <link rel="icon" href="{{url_for('static',filename='images/favicon.ico')}}" type="image/gif" sizes="16x16">
-    
+
     <!--  -->
     <link rel="stylesheet" href="{{ url_for('static', filename= 'plugins/bootstrap-5.0.2/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename= 'plugins/select2/select2.min.css') }}">
@@ -17,15 +17,16 @@
     <script src="{{ url_for('static', filename= 'plugins/bootstrap-5.0.2/bootstrap.min.js') }}"></script>
     <script src="{{ url_for('static', filename= 'plugins/fontawesome-5.15.3/fontawesome.min.js') }}"></script>
     <script src="{{ url_for('static', filename= 'plugins/select2/select2.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
     <!--  -->
 </head>
 
 <body>
     <div id="processing">Please Wait . . .</div>
     {% include 'nav.html' %}
-    
+
     {% block content %}
-    
+
     {% endblock %}
 </body>
 

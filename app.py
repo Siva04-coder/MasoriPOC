@@ -35,7 +35,7 @@ def patientsprogression():
     except:
         return render_template('login.html')
 
-    session["page_name"] = "Patients Progression"
+    session["page_name"] = "Patient's Progression"
 
     return render_template('patients-progression.html')
 
@@ -186,3 +186,6 @@ def logout():
         pass
 
     return status
+
+
+app.run(port=4858)

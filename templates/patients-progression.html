@@ -6,7 +6,6 @@
         background-color: #5ade6a73;
     }
 </style>
-
 <!--  -->
 <div class="container content-container">
     <section class="section">
@@ -53,11 +52,12 @@
                 style="margin-bottom: 0px !important" onclick="similarTrigger()">Similar
                 Patients</button>
 
-            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop_1"
-                style="margin-bottom: 0px !important" onclick="showHCP()">Show HCP Details</button>
+            <button id="btn_excel" class="btn btn-primary mb-3" data-bs-toggle="modal"
+                data-bs-target="#staticBackdrop_1" style="margin-left: 20px; margin-bottom: 0px !important" onclick="showHCP()">Show HCP
+                Details</button>
             <!--  -->
 
-            <section class="timeline">
+            <section class="timeline" style="margin-top: 10px;">
                 <ol>
                 </ol>
                 <span class="arrow arrow__prev" onclick="scrollMe()">
@@ -102,10 +102,14 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel">Similar Patients</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" onclick="SimilarClose()" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <section class="section" id="patient_timeline_popup" style="display: none;">
+
+                    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop_1"
+                        style="margin-bottom: 0px !important" onclick="showSimilarHCP()">Show HCP Details</button>
+
                     <section class="timeline">
                         <ol>
                         </ol>
@@ -149,9 +153,10 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel">HCP Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button id="btn_export_excel" class="btn btn-primary mb-3" style="margin-left: 77%; margin-bottom: 0px !important" >Export To Excel</button>
+                <button type="button" class="btn-close" id="btn_similar_hcp_close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" id="excel">
 
                 <table class="table table-striped table-hover table-bordered" id="hcpDetailsTable">
                     <thead>
@@ -186,6 +191,8 @@
     var currentLifestyle = '';
     var currentPatientnumber = '';
     var currentCity = '';
+    var similarpatientCity = '';
+    var IsSimiliarPatient = false;
 
     function addAllColumnHeaders(myList) {
         var columnSet = [];
@@ -391,7 +398,7 @@
         }, 500);
     }
 
-    function show_popup_timeline(btnElement, date, stage, ta, symptom, lifestyle, patientnumber) {
+    function show_popup_timeline(btnElement, date, stage, ta, symptom, patientCity) {
         var dateArray = date.split("@");
         var stageArray = stage.split("@");
         var taArray = ta.split("@");
@@ -440,6 +447,8 @@
         else {
             isScrollPopup = false;
         }
+
+        similarpatientCity = patientCity
 
         $("#patient_timeline_popup ol").append($("<li>"));
 
@@ -639,6 +648,7 @@
             data: data,
             success: function (response) {
                 try {
+                    IsSimiliarPatient = true;
                     $("#similar_patient_table").empty();
                     var obj = $.parseJSON(response);
                     if (Object.keys(obj).length > 0) {
@@ -712,7 +722,7 @@
                             catch { }
 
                             try {
-                                var btn = $('<button onclick="show_popup_timeline(this, \'' + date + '\', \'' + stage + '\', \'' + TA + '\', \'' + Symptom + '\', \'' + obj[i]["LifeStyle"] + '\')" />').addClass("btn btn-primary btn-sm").text("See Timeline");
+                                var btn = $('<button onclick="show_popup_timeline(this, \'' + date + '\', \'' + stage + '\', \'' + TA + '\', \'' + Symptom + '\', \'' + obj[i]["City"] + '\')" />').addClass("btn btn-primary btn-sm").text("See Timeline");
 
                                 row.append($('<td/>').append(btn));
                                 $("#similar_patient_table").append(row);
@@ -740,16 +750,84 @@
 
     function showHCP() {
 
-        $("#patient_timeline_popup .clo").hide(400);
-        $("#patient_timeline_popup .dis").show(400);
+        $("#patient_timeline_popup").slideUp();
 
         var data = new FormData();
-
-        data.append('patientnumber', $("#zipcodetext").val());
         data.append('currentCity', currentCity);
 
         $("#patient_timeline_popup ol").empty();
         $("#patient_timeline_popup").slideUp();
+
+        $("#processing").show();
+
+        $.ajax({
+            type: 'POST',
+            url: './get_hcp_details',
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 800000,
+            data: data,
+            success: function (response) {
+                try {
+                    $("#hcp_details_table").empty();
+                    var obj = $.parseJSON(response);
+                    if (Object.keys(obj).length > 0) {
+
+                        for (var i = 0; i < Object.keys(obj).length; i++) {
+                            var row = $("<tr/>");
+                            row.append($('<td/>').html(''));
+                            row.append($('<td/>').html(obj[i]["First_Name"]));
+                            row.append($('<td/>').html(obj[i]["Last_Name"]));
+                            row.append($('<td/>').html(obj[i]["NPI"]));
+                            row.append($('<td/>').html(obj[i]["Specialty"]));
+                            row.append($('<td/>').html(obj[i]["Address_1"]));
+                            row.append($('<td/>').html(obj[i]["City"]));
+                            row.append($('<td/>').html(obj[i]["State"]));
+                            row.append($('<td/>').html(obj[i]["ZIP"]));
+                            $("#hcp_details_table").append(row);
+
+                        }
+
+                        $("#btn_export_excel").show();
+                    }
+                    else {
+                        var row = $("<tr/>");
+                        row.append($('<td colspan="9" style="text-align:center" />').html('No Records Found.'));
+                        $("#hcp_details_table").append(row);
+                        $("#btn_export_excel").hide();
+                    }
+
+                    $("#processing").hide();
+                }
+                catch { $("#processing").hide(); }
+            },
+            error: function (err) {
+                
+                $(this).html("error!");
+            }
+
+        });
+
+        $("#btn_export_excel").click(function (e) {
+            debugger;
+            TableToExcel.convert(document.getElementById("excel"), {
+                name: "HCPDetails.xlsx",
+                sheet: {
+                    name: "Sheet1"
+                }
+            });
+        });
+
+        $("#processing").show()
+    }
+
+    function showSimilarHCP() {
+
+        $('#staticBackdrop').hide();
+
+        var data = new FormData();
+        data.append('currentCity', similarpatientCity);
 
         $("#processing").show();
 
@@ -797,8 +875,15 @@
             }
         });
 
-        $("#processing").show()
+        $("#processing").show();
+
+        $('#btn_similar_hcp_close').click(function () {
+            if(IsSimiliarPatient)
+            $('#staticBackdrop').show();
+        });
     }
+
+
 
 
     function scrollMeinPopup() {
@@ -813,6 +898,10 @@
             }
         }
     }
+
+function SimilarClose(){
+    IsSimiliarPatient = false;
+}
 
 </script>
 

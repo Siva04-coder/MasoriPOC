@@ -55,7 +55,7 @@
                             <thead>
                                 <tr>
                                     <th width="50px" class="text-center">#</th>
-                                    <th>Patient Name</th>
+                                    <th>Patient Number</th>
                                     <th>City</th>
                                     <th>Diagnosis</th>
                                     <th>Drug</th>
@@ -64,51 +64,48 @@
                             <tbody>
                                 <tr>
                                     <td class="text-center">1</td>
-                                    <td>Patient Name</td>
-                                    <td>City</td>
-                                    <td>Diagnosis</td>
-                                    <td>Drug</td>
+                                    <td>3126</td>
+                                    <td>Houston</td>
+                                    <td>Normal</td>
+                                    <td>LACTULOSE</td>
                                 </tr>
                                 <tr>
                                     <td class="text-center">2</td>
-                                    <td>Patient Name</td>
-                                    <td>City</td>
-                                    <td>Diagnosis</td>
-                                    <td>Drug</td>
+                                    <td>3130</td>
+                                    <td>Houston</td>
+                                    <td>Parkinson's</td>
+                                    <td>PRAMIPEXOLE</td>
                                 </tr>
                                 <tr>
                                     <td class="text-center">3</td>
-                                    <td>Patient Name</td>
-                                    <td>City</td>
-                                    <td>Diagnosis</td>
-                                    <td>Drug</td>
+                                    <td>3505</td>
+                                    <td>Albany</td>
+                                    <td>ADP</td>
+                                    <td>TAMSULOSIN</td>
                                 </tr>
                                 <tr>
                                     <td class="text-center">4</td>
-                                    <td>Patient Name</td>
-                                    <td>City</td>
-                                    <td>Diagnosis</td>
-                                    <td>Drug</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">5</td>
-                                    <td>Patient Name</td>
-                                    <td>City</td>
-                                    <td>Diagnosis</td>
-                                    <td>Drug</td>
+                                    <td>59507</td>
+                                    <td>Houston</td>
+                                    <td>DEMENTIA</td>
+                                    <td>METFORMIN</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
                 <div class="col-5">
-                    <div id="map"></div>
+                    <div id="map">
+                        <img src="../static/images/GeoLocation.png" style="
+                        width: 520px;
+                        margin-top: 40px;" />
+                    </div>
                 </div>
             </div>
         </section>
     </div>
 
-    <script src="{{ url_for('static', filename= 'plugins/map/gmap.js') }}"></script>
+    <!-- <script src="{{ url_for('static', filename= 'plugins/map/gmap.js') }}"></script> -->
     <!--  -->
     <script type="text/javascript">
         // 
@@ -118,32 +115,32 @@
             });
         });
         // 
-        var locations = [
-            ['Bondi Beach', -33.890542, 151.274856, 4],
-            ['Coogee Beach', -33.923036, 151.259052, 5],
-            ['Cronulla Beach', -34.028249, 151.157507, 3],
-            ['Manly Beach', -33.80010128657071, 151.28747820854187, 2],
-            ['Maroubra Beach', -33.950198, 151.259302, 1]
-        ];
-        var map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 10,
-            center: new google.maps.LatLng(-33.92, 151.25),
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        });
-        var infowindow = new google.maps.InfoWindow();
-        var marker, i;
-        for (i = 0; i < locations.length; i++) {
-            marker = new google.maps.Marker({
-                position: new google.maps.LatLng(locations[i][1], locations[i][2]),
-                map: map
-            });
-            google.maps.event.addListener(marker, 'click', (function (marker, i) {
-                return function () {
-                    infowindow.setContent(locations[i][0]);
-                    infowindow.open(map, marker);
-                }
-            })(marker, i));
-        }
+        // var locations = [
+        //     ['Bondi Beach', -33.890542, 151.274856, 4],
+        //     ['Coogee Beach', -33.923036, 151.259052, 5],
+        //     ['Cronulla Beach', -34.028249, 151.157507, 3],
+        //     ['Manly Beach', -33.80010128657071, 151.28747820854187, 2],
+        //     ['Maroubra Beach', -33.950198, 151.259302, 1]
+        // ];
+        // var map = new google.maps.Map(document.getElementById('map'), {
+        //     zoom: 10,
+        //     center: new google.maps.LatLng(-33.92, 151.25),
+        //     mapTypeId: google.maps.MapTypeId.ROADMAP
+        // });
+        // var infowindow = new google.maps.InfoWindow();
+        // var marker, i;
+        // for (i = 0; i < locations.length; i++) {
+        //     marker = new google.maps.Marker({
+        //         position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+        //         map: map
+        //     });
+        //     google.maps.event.addListener(marker, 'click', (function (marker, i) {
+        //         return function () {
+        //             infowindow.setContent(locations[i][0]);
+        //             infowindow.open(map, marker);
+        //         }
+        //     })(marker, i));
+        // }
     </script>
 
 {% endblock %}
