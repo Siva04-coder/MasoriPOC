@@ -35,7 +35,7 @@ def patientsprogression():
     except:
         return render_template('login.html')
 
-    session["page_name"] = "Patient's Progression"
+    session["page_name"] = "Patient Progression"
 
     return render_template('patients-progression.html')
 
