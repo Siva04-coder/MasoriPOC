@@ -8,112 +8,279 @@
     }
 </style>
 
-    <div class="container content-container">
-        <!--  -->
-        <section class="section">
-            <div class="row">
-                <div class="col">
-                    <label class="form-label">Zip Code</label>
-                    <input class="form-control">
-                </div>
-                <div class="col">
-                    <label class="form-label">City</label>
-                    <select style="width: 100%;">
-                        {% for i in city %}
-                        <option value="{{i}}">{{i}}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class=" col">
-                            <label class="form-label">Diagnosis</label>
-                            <select style="width: 100%;">
-                                {% for j in diagnosis %}
-                                <option value="{{j}}">{{j}}</option>
-                                {% endfor %}
-                            </select>
-                </div>
-                <div class="col">
-                    <label class="form-label">Drug</label>
-                    <select style="width: 100%;">
-                        {% for k in drug %}
-                        <option value="{{k}}">{{k}}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col">
-                    <label class="form-label">&nbsp;</label>
-                    <button class="btn btn-primary w-100">GO</button>
+<div class="container content-container">
+    <!--  -->
+    <section class="section">
+        <div class="row">
+            <div class="col">
+                <label class="form-label">Zip Code</label>
+                <input class="form-control" name="zipcode" id="zipcodetext">
+            </div>
+            <div class="col">
+                <label class="form-label">City</label>
+                <select style="width: 100%;" name="city" id="selectCity">
+                    <option value=""></option>
+                </select>
+            </div>
+            <div class=" col">
+                <label class="form-label">Diagnosis</label>
+                <select style="width: 100%;" name="diagnosis" id="selectdiagnosis">
+                    <option value=""></option>
+                </select>
+            </div>
+            <div class="col">
+                <label class="form-label">Drug</label>
+                <select style="width: 100%;" name="drug" id="selectdrug">
+                    <option value=""></option>
+                </select>
+            </div>
+            <div class="col">
+                <label class="form-label">&nbsp;</label>
+                <button class="btn btn-primary w-100" onclick="Search()">GO</button>
+            </div>
+        </div>
+
+    </section>
+    <!--  -->
+    <section class="section">
+        <div class="row">
+            <div class="col-7">
+                <div class="table-responsive" id="patient_details_grid">
+                    <table class="table table-striped table-hover table-bordered" id="patientTable">
+                        <thead>
+                            <tr>
+                                <th width="50px" class="text-center">#</th>
+                                <th>Patient Number</th>
+                                <th>City</th>
+                                <th>Current Diagnosis</th>
+                                <th>Current Drug</th>
+                            </tr>
+                        </thead>
+                        <tbody id="patient_table">
+                            <tr>
+                                <td colspan="5" style="text-align: center;">No Records Found.</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </section>
-        <!--  -->
-        <section class="section">
-            <div class="row">
-                <div class="col-7">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover table-bordered">
-                            <thead>
-                                <tr>
-                                    <th width="50px" class="text-center">#</th>
-                                    <th>Patient Number</th>
-                                    <th>City</th>
-                                    <th>Diagnosis</th>
-                                    <th>Drug</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="text-center">1</td>
-                                    <td>3126</td>
-                                    <td>Houston</td>
-                                    <td>Normal</td>
-                                    <td>LACTULOSE</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">2</td>
-                                    <td>3130</td>
-                                    <td>Houston</td>
-                                    <td>Parkinson's</td>
-                                    <td>PRAMIPEXOLE</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">3</td>
-                                    <td>3505</td>
-                                    <td>Albany</td>
-                                    <td>ADP</td>
-                                    <td>TAMSULOSIN</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">4</td>
-                                    <td>59507</td>
-                                    <td>Houston</td>
-                                    <td>DEMENTIA</td>
-                                    <td>METFORMIN</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="col-5">
-                    <div id="map">
-                        <img src="../static/images/GeoLocation.png" style="
+            <div class="col-5">
+                <div id="map">
+                    <img src="../static/images/GeoLocation.png" style="
                         width: 520px;
                         margin-top: 40px;" />
-                    </div>
                 </div>
             </div>
-        </section>
-    </div>
+        </div>
+    </section>
+</div>
 
-    <!-- <script src="{{ url_for('static', filename= 'plugins/map/gmap.js') }}"></script> -->
-    <!--  -->
-    <script type="text/javascript">
-        // 
-        $(document).ready(function () {
-            $('select').select2({
-                placeholder: ""
-            });
+<!-- <script src="{{ url_for('static', filename= 'plugins/map/gmap.js') }}"></script> -->
+<!--  -->
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('select').select2({
+            placeholder: ""
         });
+
+        $("#processing").show();
+        $.ajax({
+            type: 'POST',
+            url: '/get_city',
+            contentType: 'application/json',
+            data: {},
+            success: function (data) {
+                data = $.parseJSON(data);
+                $("#selectCity").find('option').remove();
+                $("#selectCity").append('<option value="--Select City--">--Select City--</option>');
+                $.each(data, function (index, value) {
+                    $("#selectCity").append('<option value=' + value + '>' + value + '</option>');
+                });
+
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/get_diagnosis',
+                    contentType: 'application/json',
+                    data: {},
+                    success: function (data) {
+                        data = $.parseJSON(data);
+                        $("#selectdiagnosis").find('option').remove();
+                        $("#selectdiagnosis").append('<option value="--Select Diagnosis--">--Select Diagnosis--</option>');
+                        $.each(data, function (index, value) {
+                            if (value != 'Other Rx')
+                                $("#selectdiagnosis").append('<option value=' + value + '>' + value + '</option>');
+                        });
+
+
+                        $.ajax({
+                            type: 'POST',
+                            url: '/get_drug',
+                            contentType: 'application/json',
+                            data: {},
+                            success: function (data) {
+                                data = $.parseJSON(data);
+                                $("#selectdrug").find('option').remove();
+                                $("#selectdrug").append('<option value="--Select Drug--">--Select Drug--</option>');
+                                $.each(data, function (index, value) {
+                                    $("#selectdrug").append('<option value=' + value + '>' + value + '</option>');
+                                });
+
+                                $("#processing").hide();
+                            },
+                            error: function () {
+                                $(this).html("error!");
+                            }
+                        });
+                    },
+                    error: function () {
+                        $(this).html("error!");
+                    }
+                });
+            },
+            error: function () {
+                $(this).html("error!");
+            }
+        });
+
+
+    });
+
+    $('#map').hide();
+
+    function Search() {
+        var data = new FormData();
+
+        data.append('zipcode', $("#zipcodetext").val());
+        data.append('city', $("#selectCity :selected").text());
+        data.append('diagnosis', $("#selectdiagnosis :selected").text());
+        data.append('drug', $("#selectdrug :selected").text());
+
+        $("#patient_timeline ol").empty();
+        $("#patient_timeline").slideUp();
+
+        if (($("#zipcodetext").val().length == 0) && ($("#selectCity").val() == "--Select City--") && ($("#selectdiagnosis").val() == "--Select Diagnosis--") && ($("#selectdrug").val() == "--Select Drug--")) {
+
+            $('#map').hide();
+            $("#patient_table").empty();
+            var row = $("<tr/>");
+            row.append($('<td colspan="7" style="text-align:center" />').html('No Records Found.'));
+            $("#patient_table").append(row);
+        }
+        else {
+
+            $("#processing").show();
+
+            $.ajax({
+                type: 'POST',
+                enctype: 'multipart/form-data',
+                url: './get_patient_details',
+                processData: false,
+                contentType: false,
+                cache: false,
+                timeout: 800000,
+                data: data,
+                success: function (response) {
+                    try {
+                        $('#map').show();
+                        $("#patient_table").empty();
+                        var obj = $.parseJSON(response);
+                        if (Object.keys(obj).length > 0) {
+
+                            for (var i = 0; i < Object.keys(obj).length; i++) {
+                                var row = $("<tr/>");
+                                row.append($('<td/>').html(''));
+                                row.append($('<td/>').html(obj[i]["Patient_Number"]));
+                                row.append($('<td/>').html(obj[i]["City"]));
+                                row.append($('<td/>').html(obj[i]["Current_TA_On_Stage"] == "Other Rx" ? "Normal" : obj[i]["Current_TA_On_Stage"]));
+                                row.append($('<td/>').html(obj[i]["Current_Medicine"]));
+                                $("#patient_table").append(row);
+
+                                var date = '';
+                                var stage = '';
+                                var TA = '';
+                                var Symptom = '';
+                                var Is_GMR_Changed = obj[i]["Is_GMR_Changed"];
+                                var MRI_Scan_Stage = obj[i]["MRI_Scan_Stage"];
+                                var StageCnt = 1;
+
+                                for (cnt = 0; cnt <= 8; cnt++) {
+                                    try {
+                                        var dateVar = 'Medicine_Date_On_Stage_' + (cnt + 1).toString();
+                                        var stageVar = 'Medicine_On_Stage_' + (cnt + 1).toString();
+                                        var TAVar = 'TA_On_Stage_' + (cnt + 1).toString();
+                                        var symptomVar = 'Symptom_On_Stage_' + (cnt + 1).toString();
+                                        var MRI_Date = StageCnt.toString();
+
+                                        if (obj[i][dateVar] != undefined && obj[i][dateVar] != "" &&
+                                            obj[i][stageVar] != undefined && obj[i][stageVar] != "" && obj[i][stageVar] != "null") {
+                                            if (date == '') {
+                                                date = TryToConvertToString(obj[i][dateVar]);
+                                            }
+                                            else {
+                                                date = date + '@' + TryToConvertToString(obj[i][dateVar]);
+                                            }
+
+                                            if (MRI_Date == MRI_Scan_Stage) {
+                                                if (Is_GMR_Changed == 'Yes') {
+                                                    date = date + '|GMR changed in latest MRI Scan.'
+                                                }
+                                            }
+
+                                            if (stage == '')
+                                                stage = (obj[i][stageVar] == "Other Rx" ? "Normal" : obj[i][stageVar]);
+                                            else
+                                                stage = stage + '@' + (obj[i][stageVar] == "Other Rx" ? "Normal" : obj[i][stageVar]);
+
+                                            if (TA == '')
+                                                TA = (obj[i][TAVar] == "Other Rx" ? "Normal" : obj[i][TAVar]);
+                                            else
+                                                TA = TA + '@' + (obj[i][TAVar] == "Other Rx" ? "Normal" : obj[i][TAVar]);
+
+                                            if (Symptom == '')
+                                                Symptom = obj[i][symptomVar];
+                                            else
+                                                Symptom = Symptom + '@' + obj[i][symptomVar];
+
+                                            StageCnt = StageCnt + 1;
+                                        }
+                                    }
+                                    catch { }
+                                }
+
+                                try {
+                                    stage = stage.replace(/'/gi, "|");
+                                    TA = TA.replace(/'/gi, "|");
+                                    Symptom = Symptom.replace(/'/gi, "|");
+                                }
+                                catch { }
+                            }
+                        }
+                        else {
+                            var row = $("<tr/>");
+                            row.append($('<td colspan="7" style="text-align:center" />').html('No Records Found.'));
+                            $("#patient_table").append(row);
+                        }
+                        $("#processing").hide();
+                    }
+                    catch { $("#processing").hide(); }
+                },
+                error: function (err) {
+                    debugger;
+                    $(this).html("error!");
+                }
+            });
+
+            $("#processing").show()
+        }
+
+
+    }
+
+
+
+
         // 
         // var locations = [
         //     ['Bondi Beach', -33.890542, 151.274856, 4],
@@ -141,6 +308,6 @@
         //         }
         //     })(marker, i));
         // }
-    </script>
+</script>
 
 {% endblock %}

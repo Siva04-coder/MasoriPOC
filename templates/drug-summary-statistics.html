@@ -14,45 +14,41 @@
         <div class="row">
             <div class="col">
                 <label class="form-label">Zip Code</label>
-                <input class="form-control">
+                <input class="form-control" name="zipcode" id="zipcodetext">
             </div>
             <div class="col">
                 <label class="form-label">City</label>
-                <select style="width: 100%;">
-                    {% for i in city %}
-                    <option value="{{i}}"">{{i}}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class=" col">
-                        <label class="form-label">Diagnosis</label>
-                        <select style="width: 100%;">
-                            {% for j in diagnosis %}
-                            <option value="{{j}}">{{j}}</option>
-                            {% endfor %}
-                        </select>
+                <select style="width: 100%;" name="city" id="selectCity">
+                    <option value=""></option>
+                </select>
+            </div>
+            <div class=" col">
+                <label class="form-label">Diagnosis</label>
+                <select style="width: 100%;" name="diagnosis" id="selectdiagnosis">
+                    <option value=""></option>
+                </select>
             </div>
             <div class="col">
                 <label class="form-label">Drug</label>
-                <select style="width: 100%;">
-                    {% for k in drug %}
-                    <option value="{{k}}">{{k}}</option>
-                    {% endfor %}
+                <select style="width: 100%;" name="drug" id="selectdrug">
+                    <option value=""></option>
                 </select>
             </div>
             <div class="col">
                 <label class="form-label">&nbsp;</label>
-                <button class="btn btn-primary w-100">GO</button>
+                <button class="btn btn-primary w-100" onclick="Search()">GO</button>
             </div>
         </div>
+
     </section>
     <!--  -->
+
     <section class="section">
         <div class="row">
-            <div class="col-7">
+            <div class="col-7" id="drug_summary_chart">
                 <div class="mt-4">
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-6" id="canvas_chart">
                             <canvas id="chart_main"></canvas>
                         </div>
                         <div class="col-6">
@@ -92,77 +88,248 @@
 <!-- <script src="http://maps.google.com/maps/api/js?sensor=false' %}"></script> -->
 <!--  -->
 <script>
-    // 
-    const chart_data = {
-        labels: ['PRAMIPEXOLE', 'LEVIDOPA', 'ZOLPIDEM'],
-        datasets: [{
-            label: 'Dataset 1',
-            data: [20, 40, 50],
-            backgroundColor: ["#019934", "#71cd90", "#bfe2ca"],
-        }]
-    };
-    //
-    const option_main = {
-        responsive: true,
-        plugins: {
-            title: {
-                display: true,
-                text: "Parkinson's",
-                position: "bottom"
-            },
-            legend: {
-                labels: {
-                    usePointStyle: true,
+    var chart_1 = '';
+    var chart_2 = '';
+    var chart_3 = '';
+    var chart_4 = '';
+    var chart_5 = '';
+
+    $('#map').hide();
+
+    function Search() {
+
+        var data = new FormData();
+
+        data.append('zipcode', $("#zipcodetext").val());
+        data.append('city', $("#selectCity :selected").text());
+        data.append('diagnosis', $("#selectdiagnosis :selected").text());
+        data.append('drug', $("#selectdrug :selected").text());
+
+        //$('#drug_summary_chart').empty()
+
+        if (($("#zipcodetext").val().length == 0) && ($("#selectCity").val() == "--Select City--") && ($("#selectdiagnosis").val() == "--Select Diagnosis--") && ($("#selectdrug").val() == "--Select Drug--")) {
+            //$('#drug_summary_chart').empty()
+            $('#map').hide();
+            chart_1.destroy();
+            chart_2.destroy();
+            chart_3.destroy();
+            chart_4.destroy();
+            chart_5.destroy();
+        }
+        else {
+            $.ajax({
+                type: 'POST',
+                enctype: 'multipart/form-data',
+                url: './get_patient_details',
+                processData: false,
+                contentType: false,
+                cache: false,
+                timeout: 800000,
+                data: data,
+                success: function (response) {
+                    try {
+                        $('#map').show();
+                        var drug = []
+                        var drug_labels = [];
+
+                        var obj = $.parseJSON(response);
+                        if (Object.keys(obj).length > 0) {
+                            //var chart_1 = document.getElementById('chart_main').getContext('2d');
+                            // chart_1.destroy();
+
+                            for (var i = 0; i < Object.keys(obj).length; i++) {
+
+                                drug = obj[i]["Current_Medicine"];
+                                drug_labels.push(drug);
+                            }
+                            var unique = []
+                            unique = drug_labels.filter(function (item, i, drug_labels) {
+                                return i == drug_labels.indexOf(item);
+                            });
+                            console.log(unique)
+
+                            var countList = []
+                            for (var i = 0; i < Object.keys(unique).length; i++) {
+
+                                var item = unique[i];
+                                var itemsFound = drug_labels.filter(function (elem) {
+                                    return elem == item;
+                                }).length;
+                                countList.push(itemsFound)
+
+                            }
+                            console.log(countList)
+
+
+                            const chart_data_diagnosis = {
+                                labels: unique,
+                                datasets: [{
+                                    label: 'Dataset 1',
+                                    data: countList,
+                                    backgroundColor: ["#019934", "#71cd90", "#bfe2ca"],
+                                }]
+                            };
+
+                            //
+                            const option_main = {
+                                responsive: true,
+                                plugins: {
+                                    title: {
+                                        display: true,
+                                        text: "Parkinson's",
+                                        position: "bottom"
+                                    },
+                                    legend: {
+                                        labels: {
+                                            usePointStyle: true,
+                                        },
+                                        pointStyle: "circle",
+                                        position: 'top',
+                                    }
+                                }
+                            };
+                            //
+                            const option_sub = {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    }
+                                }
+                            };
+                            /// $('chart_main').replaceWith('<canvas id="chart_main"></canvas>');
+                            if (chart_1) {
+                                chart_1.destroy();
+                            }
+                            chart_1 = new Chart(document.getElementById('chart_main').getContext('2d'), {
+                                type: 'doughnut',
+                                data: chart_data_diagnosis,
+                                options: option_main
+                            });
+
+                            if (chart_2) {
+                                chart_2.destroy();
+                            }
+                            chart_2 = new Chart(document.getElementById('chart_sub_1').getContext('2d'), {
+                                type: 'pie',
+                                data: chart_data_diagnosis,
+                                options: option_sub
+                            });
+
+                            if (chart_3) {
+                                chart_3.destroy();
+                            }
+                            chart_3 = new Chart(document.getElementById('chart_sub_2').getContext('2d'), {
+                                type: 'doughnut',
+                                data: chart_data_diagnosis,
+                                options: option_sub
+                            });
+
+                            if (chart_4) {
+                                chart_4.destroy();
+                            }
+                            chart_4 = new Chart(document.getElementById('chart_sub_3').getContext('2d'), {
+                                type: 'doughnut',
+                                data: chart_data_diagnosis,
+                                options: option_sub
+                            });
+
+                            if (chart_5) {
+                                chart_5.destroy();
+                            }
+                            chart_5 = new Chart(document.getElementById('chart_sub_4').getContext('2d'), {
+                                type: 'doughnut',
+                                data: chart_data_diagnosis,
+                                options: option_sub
+                            });
+
+
+                            // let chartStatus = Chart.getChart("chart_main");
+                            // chartStatus.clear();
+                        }
+                        else { }
+                    }
+                    catch { }
                 },
-                pointStyle: "circle",
-                position: 'top',
-            }
+            });
         }
-    };
-    //
-    const option_sub = {
-        responsive: true,
-        plugins: {
-            legend: {
-                display: false
-            }
-        }
-    };
-    // 
-    new Chart(document.getElementById('chart_main').getContext('2d'), {
-        type: 'doughnut',
-        data: chart_data,
-        options: option_main
-    });
-    new Chart(document.getElementById('chart_sub_1').getContext('2d'), {
-        type: 'doughnut',
-        data: chart_data,
-        options: option_sub
-    });
-    new Chart(document.getElementById('chart_sub_2').getContext('2d'), {
-        type: 'doughnut',
-        data: chart_data,
-        options: option_sub
-    });
-    new Chart(document.getElementById('chart_sub_3').getContext('2d'), {
-        type: 'doughnut',
-        data: chart_data,
-        options: option_sub
-    });
-    new Chart(document.getElementById('chart_sub_4').getContext('2d'), {
-        type: 'doughnut',
-        data: chart_data,
-        options: option_sub
-    });
+    }
+
+
+
+
 </script>
 <!--  -->
 <script type="text/javascript">
-    // 
+
     $(document).ready(function () {
         $('select').select2({
             placeholder: ""
         });
+
+        $("#processing").show();
+        $.ajax({
+            type: 'POST',
+            url: '/get_city',
+            contentType: 'application/json',
+            data: {},
+            success: function (data) {
+                data = $.parseJSON(data);
+                $("#selectCity").find('option').remove();
+                $("#selectCity").append('<option value="--Select City--">--Select City--</option>');
+                $.each(data, function (index, value) {
+                    $("#selectCity").append('<option value=' + value + '>' + value + '</option>');
+                });
+
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/get_diagnosis',
+                    contentType: 'application/json',
+                    data: {},
+                    success: function (data) {
+                        data = $.parseJSON(data);
+                        $("#selectdiagnosis").find('option').remove();
+                        $("#selectdiagnosis").append('<option value="--Select Diagnosis--">--Select Diagnosis--</option>');
+                        $.each(data, function (index, value) {
+                            if (value != 'Other Rx')
+                                $("#selectdiagnosis").append('<option value=' + value + '>' + value + '</option>');
+                        });
+
+
+                        $.ajax({
+                            type: 'POST',
+                            url: '/get_drug',
+                            contentType: 'application/json',
+                            data: {},
+                            success: function (data) {
+                                data = $.parseJSON(data);
+                                $("#selectdrug").find('option').remove();
+                                $("#selectdrug").append('<option value="--Select Drug--">--Select Drug--</option>');
+                                $.each(data, function (index, value) {
+                                    $("#selectdrug").append('<option value=' + value + '>' + value + '</option>');
+                                });
+
+                                $("#processing").hide();
+                            },
+                            error: function () {
+                                $(this).html("error!");
+                            }
+                        });
+                    },
+                    error: function () {
+                        $(this).html("error!");
+                    }
+                });
+            },
+            error: function () {
+                $(this).html("error!");
+            }
+        });
+
+
     });
+
     // 
     // var locations = [
     //     ['Bondi Beach', -33.890542, 151.274856, 4],
