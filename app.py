@@ -133,9 +133,9 @@ def get_patient_details():
         diagnosis = request.form['diagnosis']
         drug = request.form['drug']
 
-        city = city.replace("'", "''''")
-        diagnosis = diagnosis.replace("'", "''''")
-        drug = drug.replace("'", "''''")
+        city = city.replace("'", "''")
+        diagnosis = diagnosis.replace("'", "''")
+        drug = drug.replace("'", "''")
 
         entPats = db_proxy.get_patient_details(zipcode, city, diagnosis, drug)
         # print(entPats.to_json(orient="index"))
@@ -187,3 +187,7 @@ def logout():
 
     return status
 
+
+
+# if __name__ == "__main__":
+#     app.run(debug=True, port=5688)
