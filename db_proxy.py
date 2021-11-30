@@ -3,7 +3,8 @@ import pyodbc
 import pandas as pd
 
 
-conn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=ppmipoc.database.windows.net;Port=1433;Database=PPMI_LATEST;UID=ppmiadmin;PWD=Masori123$')
+# conn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=ppmipoc.database.windows.net;Port=1433;Database=PPMI_LATEST;UID=ppmiadmin;PWD=Masori123$')
+conn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:ppmipoc.database.windows.net;Port=1433;Database=PPMI_LATEST;UID=ppmiadmin;PWD=Masori123$')
 
 
 # conn = pyodbc.connect(
