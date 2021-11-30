@@ -2,9 +2,21 @@ import re
 import pyodbc
 import pandas as pd
 
+query = 'Driver={ODBC Driver 17 for SQL Server};Server=tcp:ppmipoc.database.windows.net,1433;Database=PPMI_LATEST;Uid=ppmiadmin;Pwd=Masori123$;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=120;'
+conn = ''
+retry_flag = True
+retry_count = 0
+while retry_flag and retry_count < 5:
+  try:
+    conn = pyodbc.connect(query)
+    retry_flag = False
+  except:
+    print("Retry after 1 sec")
+    retry_count = retry_count + 1
+    time.sleep(1)
 
 # conn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=ppmipoc.database.windows.net;Port=1433;Database=PPMI_LATEST;UID=ppmiadmin;PWD=Masori123$')
-conn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:ppmipoc.database.windows.net;Port=1433;Database=PPMI_LATEST;UID=ppmiadmin;PWD=Masori123$')
+# conn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:ppmipoc.database.windows.net;Port=1433;Database=PPMI_LATEST;UID=ppmiadmin;PWD=Masori123$')
 
 
 # conn = pyodbc.connect(
