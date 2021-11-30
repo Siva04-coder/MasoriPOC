@@ -28,14 +28,14 @@ while retry_flag and retry_count < 5:
 
 def get_city():
     cities = pd.read_sql_query(
-        "Select distinct City from Filtered_Data", conn)
+        "Select distinct City from Filtered_Data order by City", conn)
     cities = list(filter(lambda x: str(x) != '', cities['City'].tolist()))
     return cities
 
 
 def get_diagnosis():
     entity = pd.read_sql_query(
-        "Select distinct Current_TA_On_Stage as Diagnosis from Filtered_Data Where Current_TA_On_Stage !=''", conn)
+        "Select distinct Current_TA_On_Stage as Diagnosis from Filtered_Data Where Current_TA_On_Stage !='' order by Current_TA_On_Stage", conn)
     entity = list(filter(lambda x: str(x) != '', entity['Diagnosis'].tolist()))
     return entity
 
