@@ -15,7 +15,7 @@ retry_flag = True
 retry_count = 0
 while retry_flag and retry_count < 5:
   try:
-    if retry_count > 2:
+    if retry_count < 2:
         print('Connected SQL Server')
         conn = pyodbc.connect(query)
         break
@@ -52,7 +52,18 @@ def get_drug():
     return entityDrug
 
 
+
 def check_user(username, password):
+    cursor.execute("Select * from Users Where username='" + username+"' and password='"+password+"' and status='Active'")
+
+    is_caught = False
+    row = cursor.fetchone() 
+    while row:
+        is_caught = True
+        row = cursor.fetchone()
+
+    return is_caught
+
     user = pd.read_sql_query("Select * from Users Where username='" +
                              username+"' and password='"+password+"' and status='Active'", conn)
     if user.empty:
