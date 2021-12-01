@@ -16,7 +16,7 @@ retry_flag = True
 retry_count = 0
 while retry_flag and retry_count < 5:
   try:
-    if retry_count < 2:
+    if retry_count > 2:
         print('Connected SQL Server')
         conn = pyodbc.connect(query)
         cursor = conn.cursor()
