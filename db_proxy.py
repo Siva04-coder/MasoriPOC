@@ -2,12 +2,13 @@ import re
 import pyodbc
 import pandas as pd
 import sqlite3
-import time
+
 # conn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:ppmipoc.database.windows.net;Port=1433;Database=PPMI_LATEST;UID=ppmiadmin;PWD=Masori123$')
 
 
 # conn = pyodbc.connect(
 #     'Driver={SQL Server Native Client 11.0};Server=localhost;Database=PPMI_LATEST;Trusted_Connection=yes;')
+
 query = 'Driver={ODBC Driver 17 for SQL Server};Server=tcp:ppmipoc.database.windows.net,1433;Database=PPMI_LATEST;Uid=ppmiadmin;Pwd=Masori123$;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=120;'
 conn = ''
 retry_flag = True
@@ -26,9 +27,10 @@ while retry_flag and retry_count < 5:
     retry_count = retry_count + 1
     time.sleep(1)
 
+
 def get_city():
     cities = pd.read_sql_query(
-        "Select distinct City from Filtered_Data order by City", conn)
+        "Select distinct City from Filtered_Data order by city", conn)
     cities = list(filter(lambda x: str(x) != '', cities['City'].tolist()))
     return cities
 
@@ -141,26 +143,26 @@ def get_patient_details(zipcode, city, diagnosis, drug):
                 "or TA_On_Stage_7 = '" + diagnosis + "'" + \
                 "or TA_On_Stage_8 = '" + diagnosis + "'" + ")"
 
-        if drug != '':
-            if (zipcode != '' or city != '' or diagnosis != ''):
-                query = query + " and (Medicine_On_Stage_1 like '" + '%' + drug + '%' + "'" + \
-                    "or Medicine_On_Stage_2 like '" + '%' + drug + '%' + "'" + \
-                    "or Medicine_On_Stage_3 like '" + '%' + drug + '%' + "'" + \
-                    "or Medicine_On_Stage_4 like '" + '%' + drug + '%' + "'" + \
-                    "or Medicine_On_Stage_5 like '" + '%' + drug + '%' + "'" + \
-                    "or Medicine_On_Stage_6 like '" + '%' + drug + '%' + "'" + \
-                    "or Medicine_On_Stage_7 like '" + '%' + drug + '%' + "'" + \
-                    "or Medicine_On_Stage_8 like '" + '%' + drug + '%' + "'" + ")"
+    if drug != '':
+        if zipcode != '' or city != '' or diagnosis != '':
+            query = query + " and (Medicine_On_Stage_1 like '" + '%' + drug + '%' + "'" + \
+                "or Medicine_On_Stage_2 like '" + '%' + drug + '%' + "'" + \
+                "or Medicine_On_Stage_3 like '" + '%' + drug + '%' + "'" + \
+                "or Medicine_On_Stage_4 like '" + '%' + drug + '%' + "'" + \
+                "or Medicine_On_Stage_5 like '" + '%' + drug + '%' + "'" + \
+                "or Medicine_On_Stage_6 like '" + '%' + drug + '%' + "'" + \
+                "or Medicine_On_Stage_7 like '" + '%' + drug + '%' + "'" + \
+                "or Medicine_On_Stage_8 like '" + '%' + drug + '%' + "'" + ")"
+        else:
+            query = query + " (Medicine_On_Stage_1 like '" + '%' + drug + '%' + "'" + \
+                "or Medicine_On_Stage_2 like '" + '%' + drug + '%' + "'" + \
+                "or Medicine_On_Stage_3 like '" + '%' + drug + '%' + "'" + \
+                "or Medicine_On_Stage_4 like '" + '%' + drug + '%' + "'" + \
+                "or Medicine_On_Stage_5 like '" + '%' + drug + '%' + "'" + \
+                "or Medicine_On_Stage_6 like '" + '%' + drug + '%' + "'" + \
+                "or Medicine_On_Stage_7 like '" + '%' + drug + '%' + "'" + \
+                "or Medicine_On_Stage_8 like '" + '%' + drug + '%' + "'" + ")"
 
-                query = query + " (Medicine_On_Stage_1 like '" + '%' + drug + '%' + "'" + \
-                    "or Medicine_On_Stage_2 like '" + '%' + drug + '%' + "'" + \
-                    "or Medicine_On_Stage_3 like '" + '%' + drug + '%' + "'" + \
-                    "or Medicine_On_Stage_4 like '" + '%' + drug + '%' + "'" + \
-                    "or Medicine_On_Stage_5 like '" + '%' + drug + '%' + "'" + \
-                    "or Medicine_On_Stage_6 like '" + '%' + drug + '%' + "'" + \
-                    "or Medicine_On_Stage_7 like '" + '%' + drug + '%' + "'" + \
-                    "or Medicine_On_Stage_8 like '" + '%' + drug + '%' + "'" + ")"
-    print(query)
     p_det = pd.read_sql_query(query, conn)
 
     return p_det
