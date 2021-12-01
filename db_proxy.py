@@ -2,6 +2,7 @@ import re
 import pyodbc
 import pandas as pd
 import sqlite3
+import time
 
 # conn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};Server=tcp:ppmipoc.database.windows.net;Port=1433;Database=PPMI_LATEST;UID=ppmiadmin;PWD=Masori123$')
 
@@ -9,21 +10,20 @@ import sqlite3
 # conn = pyodbc.connect(
 #     'Driver={SQL Server Native Client 11.0};Server=localhost;Database=PPMI_LATEST;Trusted_Connection=yes;')
 
-query = 'Driver={ODBC Driver 17 for SQL Server};Server=tcp:ppmipoc.database.windows.net,1433;Database=PPMI_LATEST;Uid=ppmiadmin;Pwd=Masori123$;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=120;'
+query = 'Driver={ODBC Driver 17 for SQL Server};Server=ppmipoc.database.windows.net,1433;Database=PPMI_LATEST;Uid=ppmiadmin;Pwd=Masori123$;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=120;'
 conn = ''
 cursor = ''
 retry_flag = True
 retry_count = 0
 while retry_flag and retry_count < 5:
   try:
-    if retry_count < 2:
-        print('Connected SQL Server')
-        conn = pyodbc.connect(query)
+    if retry_count > 2:
+        print('Connected SQLite')
+        conn = sqlite3.connect("db.db", check_same_thread=False)
         cursor = conn.cursor()
         break
     else:
-        print('Connected SQLite')
-        conn = sqlite3.connect("db.db", check_same_thread=False)
+        conn = pyodbc.connect(query)
         cursor = conn.cursor()
         break
   except:
@@ -32,7 +32,41 @@ while retry_flag and retry_count < 5:
     time.sleep(1)
 
 
+def query_executer(cursor, query):
+    try:
+        cursor.execute(query)
+    except:
+        retry_flag = True
+        retry_count = 0
+        while retry_flag and retry_count < 5:
+            try:
+                if retry_count > 2:
+                    print('Connected SQLite')
+                    conn = sqlite3.connect("db.db", check_same_thread=False)
+                    cursor = conn.cursor()
+                    break
+                else:
+                    conn = pyodbc.connect(query)
+                    cursor = conn.cursor()
+                    break
+            except:
+                print("Retry after 1 sec")
+                retry_count = retry_count + 1
+                time.sleep(1)
+
+        cursor.execute(query)
+
 def get_city():
+    query_executer(cursor, "Select distinct City from Filtered_Data order by city")
+
+    cities = []
+    row = cursor.fetchone() 
+    while row:
+        if row[0] != "":
+            cities.append(row[0])
+        row = cursor.fetchone()
+    return cities
+
     cities = pd.read_sql_query(
         "Select distinct City from Filtered_Data order by city", conn)
     cities = list(filter(lambda x: str(x) != '', cities['City'].tolist()))
@@ -40,6 +74,16 @@ def get_city():
 
 
 def get_diagnosis():
+    query_executer(cursor, "Select distinct Current_TA_On_Stage as Diagnosis from Filtered_Data Where Current_TA_On_Stage !='' order by Current_TA_On_Stage")
+
+    entity = []
+    row = cursor.fetchone() 
+    while row:
+        if row[0] != "":
+            entity.append(row[0])
+        row = cursor.fetchone()
+    return entity
+
     entity = pd.read_sql_query(
         "Select distinct Current_TA_On_Stage as Diagnosis from Filtered_Data Where Current_TA_On_Stage !='' order by Current_TA_On_Stage", conn)
     entity = list(filter(lambda x: str(x) != '', entity['Diagnosis'].tolist()))
@@ -47,6 +91,16 @@ def get_diagnosis():
 
 
 def get_drug():
+    query_executer(cursor, "Select distinct Medicines from Master_Medicines order by Medicines")
+
+    entityDrug = []
+    row = cursor.fetchone() 
+    while row:
+        if row[0] != "":
+            entityDrug.append(row[0])
+        row = cursor.fetchone()
+    return entityDrug
+
     entityDrug = pd.read_sql_query(
         "Select distinct Medicines from Master_Medicines order by Medicines", conn)
 
@@ -55,9 +109,17 @@ def get_drug():
     return entityDrug
 
 
-
 def check_user(username, password):
-    
+    query_executer(cursor, "Select * from Users Where username='" + username+"' and password='"+password+"' and status='Active'")
+
+    is_caught = False
+    row = cursor.fetchone() 
+    while row:
+        is_caught = True
+        row = cursor.fetchone()
+
+    return is_caught
+
     user = pd.read_sql_query("Select * from Users Where username='" +
                              username+"' and password='"+password+"' and status='Active'", conn)
     if user.empty:
@@ -168,6 +230,11 @@ def get_patient_details(zipcode, city, diagnosis, drug):
                 "or Medicine_On_Stage_6 like '" + '%' + drug + '%' + "'" + \
                 "or Medicine_On_Stage_7 like '" + '%' + drug + '%' + "'" + \
                 "or Medicine_On_Stage_8 like '" + '%' + drug + '%' + "'" + ")"
+    
+    query_executer(cursor, query)
+    rows = cursor.fetchall() 
+    p_det = pd.DataFrame.from_records(rows, columns=[col[0] for col in cursor.description])
+    return p_det
 
     p_det = pd.read_sql_query(query, conn)
 
@@ -223,6 +290,11 @@ def get_similar_patient_details(patientnumber, lifestyle):
         "where  " + \
         "[Patient_Number]!='"+patientnumber+"' and LifeStyle='"+lifestyle+"'"
 
+    query_executer(cursor, query)
+    rows = cursor.fetchall() 
+    p_det = pd.DataFrame.from_records(rows, columns=[col[0] for col in cursor.description])
+    return p_det    
+
     p_det = pd.read_sql_query(query, conn)
 
     return p_det
@@ -236,6 +308,11 @@ def get_hcp_details(city):
         "from HCP_Details  " + \
         "where  " + \
         "city='"+city+"'"
+
+    query_executer(cursor, query)
+    rows = cursor.fetchall() 
+    p_det = pd.DataFrame.from_records(rows, columns=[col[0] for col in cursor.description])
+    return p_det
 
     p_det = pd.read_sql_query(query, conn)
     return p_det
