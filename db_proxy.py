@@ -11,6 +11,7 @@ import sqlite3
 
 query = 'Driver={ODBC Driver 17 for SQL Server};Server=tcp:ppmipoc.database.windows.net,1433;Database=PPMI_LATEST;Uid=ppmiadmin;Pwd=Masori123$;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=120;'
 conn = ''
+cursor = ''
 retry_flag = True
 retry_count = 0
 while retry_flag and retry_count < 5:
@@ -18,10 +19,12 @@ while retry_flag and retry_count < 5:
     if retry_count < 2:
         print('Connected SQL Server')
         conn = pyodbc.connect(query)
+        cursor = conn.cursor()
         break
     else:
         print('Connected SQLite')
         conn = sqlite3.connect("db.db", check_same_thread=False)
+        cursor = conn.cursor()
         break
   except:
     print("Retry after 1 sec")
