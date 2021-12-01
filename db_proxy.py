@@ -16,11 +16,12 @@ retry_count = 0
 while retry_flag and retry_count < 5:
   try:
     if retry_count > 2:
-        print('Connected SQLite')
-        conn = sqlite3.connect("db.db", check_same_thread=False)
+        print('Connected SQL Server')
+        conn = pyodbc.connect(query)
         break
     else:
-        conn = pyodbc.connect(query)
+        print('Connected SQLite')
+        conn = sqlite3.connect("db.db", check_same_thread=False)
         break
   except:
     print("Retry after 1 sec")
